@@ -44,6 +44,12 @@ const TeamSection = () => {
     description: "Apoyo técnico y educativo del equipo",
     skills: ["Educación", "Apoyo Técnico", "Coordinación"],
     icon: Users
+  }, {
+    name: "Ian Valdez",
+    role: "Coach",
+    description: "Entrenador especializado en estrategias competitivas",
+    skills: ["Coaching", "Estrategia", "Motivación"],
+    icon: Target
   }];
   return <section id="equipo" className="py-20 bg-gradient-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
