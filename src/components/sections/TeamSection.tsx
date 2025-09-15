@@ -11,8 +11,8 @@ const TeamSection = () => {
   }, {
     name: "Diego Celestino",
     role: "Investigador",
-    description: "Experto en programación de robots y algoritmos",
-    skills: ["Python", "EV3", "Algoritmos"],
+    description: "Especialista en investigación tecnológica y análisis de datos",
+    skills: ["Investigación", "Análisis", "Tecnología"],
     icon: Code
   }, {
     name: "Rodrigo Damian",
