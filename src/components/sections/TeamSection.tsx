@@ -46,9 +46,9 @@ const TeamSection = () => {
     icon: Users
   }, {
     name: "Ian Valdez",
-    role: "Coach",
-    description: "Entrenador especializado en estrategias competitivas",
-    skills: ["Coaching", "Estrategia", "Motivación"],
+    role: "Mentor",
+    description: "Mentor especializado en desarrollo personal y técnico del equipo",
+    skills: ["Mentoría", "Desarrollo", "Guía"],
     icon: Target
   }];
   return <section id="equipo" className="py-20 bg-gradient-section">
