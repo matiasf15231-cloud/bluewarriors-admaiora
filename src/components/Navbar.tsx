@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Trophy, Users, Bot, Medal, Camera } from 'lucide-react';
+import { Menu, X, Trophy, Users, Bot, Medal, Camera, Instagram } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +54,7 @@ const Navbar = () => {
                   className="p-2 text-foreground hover:text-primary transition-colors duration-smooth rounded-md hover:bg-secondary"
                   title="BlueWarriors Instagram"
                 >
-                  <Trophy className="h-4 w-4" />
+                  <Instagram className="h-4 w-4" />
                 </a>
                 <a
                   href="https://www.instagram.com/fll.rd/?hl=es"
