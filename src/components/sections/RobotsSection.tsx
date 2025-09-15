@@ -13,7 +13,7 @@ const RobotsSection = () => {
     type: "Robot Principal",
     description: "Nuestro robot más avanzado, optimizado para las misiones de la temporada 2026.",
     features: ["Brazo articulado", "Sistema de navegación preciso", "Mecanismo de agarre dual"],
-    tech: ["EV3 Mindstorms", "Sensores ultrasónicos", "Motor de precisión"],
+    tech: ["SpikePrime", "Sensores ultrasónicos", "Motor de precisión"],
     status: "En desarrollo"
   };
   const prototypes = [{
@@ -22,7 +22,7 @@ const RobotsSection = () => {
     month: "septiembre-2025",
     description: "Primer prototipo de desarrollo para pruebas y experimentación de la temporada 2025-2026.",
     features: ["Diseño modular", "Base de movimiento optimizada", "Sistema de sensores básico"],
-    tech: ["EV3 Mindstorms", "Sensores de color", "Motor básico"],
+    tech: ["SpikePrime", "Sensores de color", "Motor básico"],
     status: "Investigación"
   }];
   const skills = [{

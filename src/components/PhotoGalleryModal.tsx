@@ -13,11 +13,11 @@ import prototype1_6 from '@/assets/prototype-1-6.png';
 
 const photos = [
   { src: prototype1_1, alt: 'Robot Prototipo #1 - Vista frontal', description: 'Vista frontal del robot con estructura de soporte' },
-  { src: prototype1_2, alt: 'Robot Prototipo #1 - Vista lateral', description: 'Vista lateral mostrando el EV3 y cables' },
+  { src: prototype1_2, alt: 'Robot Prototipo #1 - Vista lateral', description: 'Vista lateral mostrando el SpikePrime y cables' },
   { src: prototype1_3, alt: 'Robot Prototipo #1 - Vista trasera', description: 'Vista trasera del robot prototipo' },
   { src: prototype1_4, alt: 'Robot Prototipo #1 - Otra vista lateral', description: 'Vista lateral derecha con detalles de construcción' },
   { src: prototype1_5, alt: 'Robot Prototipo #1 - Vista interior', description: 'Vista interior mostrando componentes internos' },
-  { src: prototype1_6, alt: 'Robot Prototipo #1 - Vista superior', description: 'Vista superior con EV3 Mindstorms visible' },
+  { src: prototype1_6, alt: 'Robot Prototipo #1 - Vista superior', description: 'Vista superior con SpikePrime visible' },
 ];
 
 interface PhotoGalleryModalProps {
