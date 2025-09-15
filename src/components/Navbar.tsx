@@ -57,7 +57,7 @@ const Navbar = () => {
                   <Instagram className="h-4 w-4" />
                 </a>
                 <a
-                  href="https://www.instagram.com/fll.rd/?hl=es"
+                  href="https://www.instagram.com/fll.rd/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 text-foreground hover:text-primary transition-colors duration-smooth rounded-md hover:bg-secondary"
