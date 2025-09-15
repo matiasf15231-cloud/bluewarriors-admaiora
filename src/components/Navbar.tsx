@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Trophy, Users, Bot, Medal, Camera, Instagram } from 'lucide-react';
+import { Menu, X, Trophy, Users, Bot, Medal, Camera } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +34,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-center space-x-1">
+            <div className="ml-10 flex items-baseline space-x-1">
               {navItems.map((item) => (
                 <button
                   key={item.name}
@@ -44,28 +44,6 @@ const Navbar = () => {
                   {item.name}
                 </button>
               ))}
-              
-              {/* Instagram Links */}
-              <div className="flex items-center space-x-2 ml-4 pl-4 border-l border-border">
-                <a
-                  href="https://www.instagram.com/blu_ewarriors/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 text-foreground hover:text-primary transition-colors duration-smooth rounded-md hover:bg-secondary"
-                  title="BlueWarriors Instagram"
-                >
-                  <Instagram className="h-4 w-4" />
-                </a>
-                <a
-                  href="https://www.instagram.com/fll.rd/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 text-foreground hover:text-primary transition-colors duration-smooth rounded-md hover:bg-secondary"
-                  title="FIRST Lego League RD Instagram"
-                >
-                  <Bot className="h-4 w-4" />
-                </a>
-              </div>
             </div>
           </div>
 
