@@ -53,7 +53,7 @@ const TeamSection = () => {
             Nuestro <span className="text-primary">Equipo</span>
           </h2>
           <div className="max-w-3xl mx-auto">
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">Somos un equipo diverso y apasionado de República Dominicana, unidos por nuestra pasión por la robótica y la innovación.</p>
+            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">Somos un equipo diverso y apasionado por nuestra pasión por la robótica y la innovación.</p>
             <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-primary/20">
               <h3 className="text-2xl font-bold text-primary mb-4">Nuestra Historia</h3>
               <p className="text-foreground">Fundado en 2022, BlueWarriors. A través de la dedicación, el trabajo en equipo y el aprendizaje continuo, hemos evolucionado desde principiantes hasta competidores serios, mejorando consistentemente nuestro rendimiento cada año.</p>
