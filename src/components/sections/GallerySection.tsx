@@ -31,26 +31,31 @@ const GallerySection = () => {
     <section id="galeria" className="py-20 bg-gradient-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
+          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6 animate-fade-in-up opacity-0">
             Galería <span className="text-primary">Multimedia</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-fade-in-up opacity-0 stagger-1">
             Explora nuestro trabajo, competencias y momentos especiales del equipo.
           </p>
         </div>
 
         {/* Sistema de Filtración */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {categories.map(category => {
+          {categories.map((category, index) => {
             const IconComponent = category.icon;
             return (
               <Button
                 key={category.id}
                 variant={activeTab === category.id ? "default" : "outline"}
                 onClick={() => setActiveTab(category.id)}
-                className="flex items-center gap-2 px-6 py-3"
+                className={`flex items-center gap-2 px-6 py-3 transition-all duration-300 hover:scale-105 hover-glow animate-scale-in opacity-0 ${
+                  activeTab === category.id 
+                    ? 'bg-primary text-primary-foreground shadow-blue-glow' 
+                    : 'hover:bg-primary/10 hover:text-primary hover:border-primary/50'
+                }`}
+                style={{ animationDelay: `${0.2 + index * 0.1}s` }}
               >
-                <IconComponent className="h-4 w-4" />
+                <IconComponent className={`h-4 w-4 transition-all duration-300 ${activeTab === category.id ? 'animate-rotate-in' : ''}`} />
                 {category.name}
               </Button>
             );
@@ -60,14 +65,14 @@ const GallerySection = () => {
         {/* Área de Contenido */}
         <div className="min-h-[400px] flex items-center justify-center">
           {filteredItems.length === 0 ? (
-            <div className="text-center">
-              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-muted/20 flex items-center justify-center">
-                <Camera className="h-12 w-12 text-muted-foreground" />
+            <div className="text-center animate-fade-in-up opacity-0 stagger-3">
+              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-muted/20 flex items-center justify-center animate-float hover-glow">
+                <Camera className="h-12 w-12 text-muted-foreground animate-rotate-in" />
               </div>
-              <h3 className="text-2xl font-semibold text-foreground mb-2">
+              <h3 className="text-2xl font-semibold text-foreground mb-2 animate-fade-in-up">
                 Contenido Próximamente
               </h3>
-              <p className="text-muted-foreground max-w-md mx-auto">
+              <p className="text-muted-foreground max-w-md mx-auto animate-fade-in-up stagger-1">
                 Estamos preparando contenido increíble para esta sección. ¡Vuelve pronto para ver nuestras últimas actualizaciones!
               </p>
             </div>
@@ -76,21 +81,26 @@ const GallerySection = () => {
               {filteredItems.map((item, index) => {
                 const IconComponent = item.icon;
                 return (
-                  <Card key={index} className="group hover:shadow-blue-glow transition-all duration-smooth">
-                    <CardContent className="p-6">
-                      <div className="aspect-video bg-muted/10 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-                        <IconComponent className="h-12 w-12 text-muted-foreground" />
+                  <Card key={index} className="group hover:shadow-blue-glow transition-all duration-300 hover-lift animate-scale-in opacity-0" style={{ animationDelay: `${0.4 + index * 0.1}s` }}>
+                    <CardContent className="p-6 relative overflow-hidden">
+                      {/* Animated background */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                      
+                      <div className="aspect-video bg-muted/10 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-muted/20 transition-all duration-300">
+                        <IconComponent className="h-12 w-12 text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
                         {item.type === 'video' && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                            <Play className="h-8 w-8 text-white" />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-all duration-300">
+                            <Play className="h-8 w-8 text-white group-hover:scale-125 transition-all duration-300" />
                           </div>
                         )}
                       </div>
                       <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="secondary">{item.type === 'video' ? 'Video' : 'Foto'}</Badge>
+                        <Badge variant="secondary" className="group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                          {item.type === 'video' ? 'Video' : 'Foto'}
+                        </Badge>
                       </div>
-                      <h3 className="font-semibold text-lg text-foreground mb-2">{item.title}</h3>
-                      <p className="text-muted-foreground text-sm">{item.description}</p>
+                      <h3 className="font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors duration-300">{item.title}</h3>
+                      <p className="text-muted-foreground text-sm group-hover:text-foreground transition-colors duration-300">{item.description}</p>
                     </CardContent>
                   </Card>
                 );
