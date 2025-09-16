@@ -123,9 +123,9 @@ const RobotsSection = () => {
                               {prototype.features.slice(0, 2).map((feature, featureIndex) => <Badge key={featureIndex} variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
                                   {feature}
                                 </Badge>)}
-                              {prototype.features.length > 2 && <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                                  +{prototype.features.length - 2} más
-                                </Badge>}
+                              <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                                85 piezas
+                              </Badge>
                             </div>
                           </div>
                           
