@@ -4,56 +4,56 @@ import { Users, Code, Wrench, Lightbulb, Star, Target } from 'lucide-react';
 const TeamSection = () => {
   const teamMembers = [{
     name: "Oscar Luis",
-    role: "Capitán del Equipo",
+    role: "Líder",
     description: "Me encanta liderar proyectos y ver cómo cada compañero aporta ideas únicas. Siempre busco que todos participen activamente.",
     skills: ["Liderazgo", "Motivación", "Comunicación"],
     icon: Star,
     personality: "El que mantiene a todos unidos y enfocados"
   }, {
     name: "Diego Celestino",
-    role: "Cerebro Analítico",
+    role: "Investigador",
     description: "Disfruto investigando datos y descubriendo patrones. Me fascina encontrar la mejor estrategia para cada desafío.",
     skills: ["Investigación", "Datos", "Estrategia"],
     icon: Code,
     personality: "El que siempre tiene la respuesta basada en datos"
   }, {
     name: "Rodrigo Damian",
-    role: "Maestro Constructor",
+    role: "Creativo",
     description: "Mis manos cobran vida cuando construyo robots. Me emociona ver cómo mis diseños toman forma y funcionan perfectamente.",
     skills: ["Construcción", "Diseño 3D", "Mecánica"],
     icon: Wrench,
     personality: "El artista de las piezas LEGO y los engranajes"
   }, {
     name: "Marian Jimenez",
-    role: "Voz del Equipo",
+    role: "Comunicadora",
     description: "Me apasiona comunicar nuestras ideas y proyectos. Creo que las mejores innovaciones deben ser compartidas con el mundo.",
     skills: ["Presentaciones", "Creatividad", "Storytelling"],
     icon: Lightbulb,
     personality: "La que convierte ideas complejas en historias increíbles"
   }, {
     name: "Eduardo Bon",
-    role: "Organizador Maestro",
+    role: "Organizador de Materiales",
     description: "Soy el que se asegura de que no perdamos ninguna pieza importante. Me encanta planificar cada detalle de nuestras misiones.",
     skills: ["Organización", "Logística", "Planificación"],
     icon: Target,
     personality: "El guardián del orden y la eficiencia"
   }, {
     name: "Franklin Vargas",
-    role: "Mentor Sabio",
+    role: "Profesor Mentor",
     description: "Guío a estos increíbles jóvenes en su camino hacia la excelencia. Mi misión es verlos crecer y alcanzar sus sueños.",
     skills: ["Mentoría", "Enseñanza", "Inspiración"],
     icon: Users,
     personality: "El sabio consejero que siempre cree en nosotros"
   }, {
     name: "Génesis Ogando",
-    role: "Apoyo Técnico",
+    role: "Profesora Asistente",
     description: "Ayudo al equipo a resolver problemas técnicos y a mantener la motivación alta. Me encanta ver su progreso diario.",
     skills: ["Soporte Técnico", "Motivación", "Resolución"],
     icon: Users,
     personality: "La que siempre encuentra una solución cuando todo parece imposible"
   }, {
     name: "Ian Valdez",
-    role: "Guía Personal",
+    role: "Mentor",
     description: "Me dedico al desarrollo integral de cada miembro del equipo. Creo en el potencial ilimitado de cada joven.",
     skills: ["Desarrollo Personal", "Coaching", "Crecimiento"],
     icon: Target,
