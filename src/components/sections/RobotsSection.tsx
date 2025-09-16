@@ -46,10 +46,10 @@ const RobotsSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6 animate-fade-in-up opacity-0">
+          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
             Robots & <span className="text-primary">Proyectos</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-fade-in-up opacity-0 stagger-1">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Exploramos la intersección entre creatividad e ingeniería, construyendo robots 
             que no solo compiten, sino que también resuelven problemas del mundo real.
           </p>
@@ -64,19 +64,15 @@ const RobotsSection = () => {
 
         {/* Prototypes List */}
         <div className="mb-16">
-          <h3 className="text-2xl font-bold text-center text-foreground mb-8 animate-fade-in-up opacity-0 stagger-2">
+          <h3 className="text-2xl font-bold text-center text-foreground mb-8">
             Prototipos <span className="text-primary">2025-2026</span>
           </h3>
           
           {/* Date Filter */}
-          <div className="max-w-md mx-auto mb-8 animate-scale-in opacity-0 stagger-3">
+          <div className="max-w-md mx-auto mb-8">
             <div className="flex items-center gap-4 justify-center">
               <label className="text-sm font-medium text-foreground">Filtrar por fecha:</label>
-              <select 
-                value={selectedMonth} 
-                onChange={e => setSelectedMonth(e.target.value)} 
-                className="px-3 py-2 border border-input bg-background rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 hover:border-primary/50 focus:scale-105"
-              >
+              <select value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)} className="px-3 py-2 border border-input bg-background rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                 <option value="all">Todas las fechas</option>
                 <option value="septiembre-2025">Septiembre 2025</option>
                 <option value="octubre-2025">Octubre 2025</option>
@@ -163,19 +159,19 @@ const RobotsSection = () => {
         </div>
 
         {/* Skills Section */}
-        <div className="bg-gradient-section rounded-2xl p-8 sm:p-12 hover:shadow-2xl transition-all duration-500 animate-fade-in-up opacity-0 stagger-5">
-          <h3 className="text-3xl font-bold text-center text-foreground mb-12 animate-fade-in-up opacity-0 stagger-6">
+        <div className="bg-gradient-section rounded-2xl p-8 sm:p-12">
+          <h3 className="text-3xl font-bold text-center text-foreground mb-12">
             Nuestras <span className="text-primary">Especialidades</span>
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {skills.map((skill, index) => {
             const IconComponent = skill.icon;
-            return <div key={index} className="text-center space-y-4 group animate-scale-in opacity-0" style={{ animationDelay: `${0.7 + index * 0.1}s` }}>
-                  <div className="mx-auto w-16 h-16 bg-gradient-hero rounded-full flex items-center justify-center shadow-blue-glow group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 animate-float" style={{ animationDelay: `${index * 0.5}s` }}>
-                    <IconComponent className="h-8 w-8 text-white group-hover:scale-125 transition-all duration-300" />
+            return <div key={index} className="text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 bg-gradient-hero rounded-full flex items-center justify-center shadow-blue-glow">
+                    <IconComponent className="h-8 w-8 text-white" />
                   </div>
-                  <h4 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">{skill.title}</h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed group-hover:text-foreground transition-colors duration-300">
+                  <h4 className="text-xl font-bold text-foreground">{skill.title}</h4>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                     {skill.description}
                   </p>
                 </div>;
@@ -184,20 +180,16 @@ const RobotsSection = () => {
         </div>
 
         {/* Gallery Preview */}
-        <div className="mt-16 text-center animate-fade-in-up opacity-0 stagger-7">
+        <div className="mt-16 text-center">
           <h3 className="text-2xl font-bold text-foreground mb-6">Galería de Robots</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {Array.from({
             length: 8
-          }).map((_, index) => <div 
-              key={index} 
-              className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-300 cursor-pointer group hover-lift animate-scale-in opacity-0" 
-              style={{ animationDelay: `${0.8 + index * 0.05}s` }}
-            >
-                <Bot className="h-8 w-8 text-primary group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 animate-float" style={{ animationDelay: `${index * 0.3}s` }} />
+          }).map((_, index) => <div key={index} className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-colors duration-smooth cursor-pointer group">
+                <Bot className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-smooth" />
               </div>)}
           </div>
-          <Button variant="outline" size="lg" className="hover:scale-105 hover:shadow-blue-glow transition-all duration-300 animate-scale-in opacity-0 stagger-8">
+          <Button variant="outline" size="lg">
             Ver Galería Completa
             <ExternalLink className="ml-2 h-4 w-4" />
           </Button>
