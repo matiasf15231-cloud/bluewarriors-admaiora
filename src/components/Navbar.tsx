@@ -39,9 +39,10 @@ const Navbar = () => {
                 <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors duration-smooth rounded-md hover:bg-secondary"
+                  className="group px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-all duration-300 rounded-md hover:bg-secondary hover:scale-105 hover:shadow-md relative overflow-hidden"
                 >
-                  {item.name}
+                  <span className="relative z-10">{item.name}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                 </button>
               ))}
             </div>
@@ -71,10 +72,11 @@ const Navbar = () => {
                 <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className="flex items-center w-full px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors duration-smooth"
+                  className="group flex items-center w-full px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-secondary rounded-md transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden"
                 >
-                  <IconComponent className="h-5 w-5 mr-3" />
-                  {item.name}
+                  <IconComponent className="h-5 w-5 mr-3 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
+                  <span className="relative z-10">{item.name}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                 </button>
               );
             })}

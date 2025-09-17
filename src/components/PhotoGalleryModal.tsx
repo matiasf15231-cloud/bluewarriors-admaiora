@@ -43,12 +43,12 @@ const PhotoGalleryModal = ({ isOpen, onClose, prototypeTitle }: PhotoGalleryModa
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-4">
-          <DialogTitle className="text-2xl font-bold text-foreground">
+      <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-hidden animate-scale-in">
+        <DialogHeader className="p-6 pb-4 animate-fade-in" style={{ animationDelay: '100ms' }}>
+          <DialogTitle className="text-2xl font-bold text-foreground animate-fade-in" style={{ animationDelay: '200ms' }}>
             Galería de Fotos - {prototypeTitle}
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground">
+          <DialogDescription className="text-muted-foreground animate-fade-in" style={{ animationDelay: '300ms' }}>
             Explora las diferentes vistas y detalles del robot prototipo
           </DialogDescription>
         </DialogHeader>
@@ -60,28 +60,29 @@ const PhotoGalleryModal = ({ isOpen, onClose, prototypeTitle }: PhotoGalleryModa
               <img
                 src={photos[currentPhotoIndex].src}
                 alt={photos[currentPhotoIndex].alt}
-                className="max-w-2xl max-h-96 object-contain rounded-lg shadow-lg"
+                className="max-w-2xl max-h-96 object-contain rounded-lg shadow-lg transition-all duration-500 hover:scale-105 animate-fade-in"
+                key={currentPhotoIndex}
               />
               
               {/* Navigation Buttons */}
               <Button
                 variant="secondary"
                 size="sm"
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-background/80 hover:bg-background"
+                className="group absolute left-4 top-1/2 transform -translate-y-1/2 bg-background/80 hover:bg-background transition-all duration-300 hover:scale-110 hover:shadow-lg"
                 onClick={prevPhoto}
                 disabled={photos.length <= 1}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4 transition-transform duration-300 group-hover:scale-125 group-hover:-translate-x-1" />
               </Button>
               
               <Button
                 variant="secondary"
                 size="sm"
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-background/80 hover:bg-background"
+                className="group absolute right-4 top-1/2 transform -translate-y-1/2 bg-background/80 hover:bg-background transition-all duration-300 hover:scale-110 hover:shadow-lg"
                 onClick={nextPhoto}
                 disabled={photos.length <= 1}
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:scale-125 group-hover:translate-x-1" />
               </Button>
 
               {/* Photo Counter */}
@@ -105,16 +106,20 @@ const PhotoGalleryModal = ({ isOpen, onClose, prototypeTitle }: PhotoGalleryModa
                 <button
                   key={index}
                   onClick={() => goToPhoto(index)}
-                  className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-smooth ${
+                  className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-300 hover:scale-110 animate-fade-in ${
                     index === currentPhotoIndex
-                      ? 'border-primary ring-2 ring-primary/20'
-                      : 'border-border hover:border-primary/50'
+                      ? 'border-primary ring-2 ring-primary/20 scale-105 shadow-lg'
+                      : 'border-border hover:border-primary/50 hover:shadow-md'
                   }`}
+                  style={{ 
+                    animationDelay: `${index * 50}ms`,
+                    animationFillMode: 'both'
+                  }}
                 >
                   <img
                     src={photo.src}
                     alt={photo.alt}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                   />
                 </button>
               ))}

@@ -41,16 +41,24 @@ const GallerySection = () => {
 
         {/* Sistema de Filtración */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {categories.map(category => {
+          {categories.map((category, index) => {
             const IconComponent = category.icon;
             return (
               <Button
                 key={category.id}
                 variant={activeTab === category.id ? "default" : "outline"}
                 onClick={() => setActiveTab(category.id)}
-                className="flex items-center gap-2 px-6 py-3"
+                className={`group flex items-center gap-2 px-6 py-3 transform transition-all duration-300 hover:scale-105 animate-fade-in ${
+                  activeTab === category.id 
+                    ? 'shadow-lg shadow-primary/25' 
+                    : 'hover:shadow-md hover:border-primary/50'
+                }`}
+                style={{ 
+                  animationDelay: `${index * 100}ms`,
+                  animationFillMode: 'both'
+                }}
               >
-                <IconComponent className="h-4 w-4" />
+                <IconComponent className="h-4 w-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
                 {category.name}
               </Button>
             );
@@ -76,21 +84,31 @@ const GallerySection = () => {
               {filteredItems.map((item, index) => {
                 const IconComponent = item.icon;
                 return (
-                  <Card key={index} className="group hover:shadow-blue-glow transition-all duration-smooth">
+                  <Card 
+                    key={index} 
+                    className="group hover:shadow-blue-glow transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer animate-fade-in"
+                    style={{ 
+                      animationDelay: `${index * 150}ms`,
+                      animationFillMode: 'both'
+                    }}
+                  >
                     <CardContent className="p-6">
-                      <div className="aspect-video bg-muted/10 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-                        <IconComponent className="h-12 w-12 text-muted-foreground" />
+                      <div className="aspect-video bg-muted/10 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-primary/5 transition-all duration-300">
+                        <IconComponent className="h-12 w-12 text-muted-foreground transition-all duration-300 group-hover:scale-125 group-hover:text-primary group-hover:rotate-12" />
                         {item.type === 'video' && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                            <Play className="h-8 w-8 text-white" />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-all duration-300">
+                            <Play className="h-8 w-8 text-white transition-all duration-300 group-hover:scale-110" />
                           </div>
                         )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                       </div>
                       <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="secondary">{item.type === 'video' ? 'Video' : 'Foto'}</Badge>
+                        <Badge variant="secondary" className="transition-all duration-300 group-hover:bg-primary group-hover:text-white">
+                          {item.type === 'video' ? 'Video' : 'Foto'}
+                        </Badge>
                       </div>
-                      <h3 className="font-semibold text-lg text-foreground mb-2">{item.title}</h3>
-                      <p className="text-muted-foreground text-sm">{item.description}</p>
+                      <h3 className="font-semibold text-lg text-foreground mb-2 transition-colors duration-300 group-hover:text-primary">{item.title}</h3>
+                      <p className="text-muted-foreground text-sm transition-colors duration-300 group-hover:text-foreground">{item.description}</p>
                     </CardContent>
                   </Card>
                 );

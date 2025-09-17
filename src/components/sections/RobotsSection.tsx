@@ -99,15 +99,23 @@ const RobotsSection = () => {
                   </div>;
             }
             return <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center">
-                  {filteredPrototypes.map((prototype, index) => <Card key={index} className="group hover:shadow-card transition-all duration-smooth border-green-500/30 hover:border-green-500/50 bg-green-50/50 dark:bg-green-950/20 max-w-md w-full">
-                      <CardHeader className="pb-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <Badge variant="outline" className="text-xs border-green-600 text-green-600">{prototype.date}</Badge>
-                          <Badge variant="outline" className="border-green-600 text-green-600">
+                  {filteredPrototypes.map((prototype, index) => <Card 
+                      key={index} 
+                      className="group hover:shadow-card transition-all duration-500 border-green-500/30 hover:border-green-500/50 bg-green-50/50 dark:bg-green-950/20 max-w-md w-full hover:scale-105 hover:-translate-y-3 cursor-pointer animate-fade-in"
+                      style={{ 
+                        animationDelay: `${index * 200}ms`,
+                        animationFillMode: 'both'
+                      }}
+                    >
+                      <CardHeader className="pb-4 relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-t-lg"></div>
+                        <div className="flex items-center justify-between mb-2 relative z-10">
+                          <Badge variant="outline" className="text-xs border-green-600 text-green-600 transition-all duration-300 group-hover:bg-green-600 group-hover:text-white group-hover:scale-110">{prototype.date}</Badge>
+                          <Badge variant="outline" className="border-green-600 text-green-600 transition-all duration-300 group-hover:bg-green-600 group-hover:text-white group-hover:scale-110 group-hover:animate-pulse">
                             {prototype.status}
                           </Badge>
                         </div>
-                        <CardTitle className="text-lg group-hover:text-green-600 transition-colors duration-smooth">
+                        <CardTitle className="text-lg group-hover:text-green-600 transition-all duration-300 group-hover:scale-105 relative z-10">
                           {prototype.title}
                         </CardTitle>
                       </CardHeader>
@@ -140,15 +148,24 @@ const RobotsSection = () => {
                         </div>
 
                         <div className="flex gap-2 pt-2">
-                          <Button size="sm" variant="outline" className="flex-1 border-green-600 text-green-600 hover:bg-green-600 hover:text-white" onClick={() => {
-                      setSelectedPrototype(prototype.title);
-                      setIsGalleryOpen(true);
-                    }}>
-                            <Play className="w-4 h-4 mr-2" />
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="group/btn flex-1 border-green-600 text-green-600 hover:bg-green-600 hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-green-600/25" 
+                            onClick={() => {
+                              setSelectedPrototype(prototype.title);
+                              setIsGalleryOpen(true);
+                            }}
+                          >
+                            <Play className="w-4 h-4 mr-2 transition-transform duration-300 group-hover/btn:scale-110 group-hover/btn:rotate-12" />
                             Ver Fotos
                           </Button>
-                          <Button size="sm" variant="ghost" className="text-green-600 hover:bg-green-100 dark:hover:bg-green-900">
-                            <ExternalLink className="w-4 h-4" />
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            className="group/btn text-green-600 hover:bg-green-100 dark:hover:bg-green-900 transition-all duration-300 hover:scale-110 hover:rotate-12"
+                          >
+                            <ExternalLink className="w-4 h-4 transition-transform duration-300 group-hover/btn:scale-125" />
                           </Button>
                         </div>
                       </CardContent>
@@ -185,13 +202,25 @@ const RobotsSection = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {Array.from({
             length: 8
-          }).map((_, index) => <div key={index} className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-colors duration-smooth cursor-pointer group">
-                <Bot className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-smooth" />
+          }).map((_, index) => <div 
+              key={index} 
+              className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in"
+              style={{ 
+                animationDelay: `${index * 100}ms`,
+                animationFillMode: 'both'
+              }}
+            >
+                <Bot className="h-8 w-8 text-primary group-hover:scale-125 group-hover:rotate-12 transition-all duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
               </div>)}
           </div>
-          <Button variant="outline" size="lg">
+          <Button 
+            variant="outline" 
+            size="lg"
+            className="group transition-all duration-500 hover:scale-110 hover:shadow-lg hover:shadow-primary/25"
+          >
             Ver Galería Completa
-            <ExternalLink className="ml-2 h-4 w-4" />
+            <ExternalLink className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-45" />
           </Button>
         </div>
 

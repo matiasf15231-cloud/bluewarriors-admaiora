@@ -40,9 +40,13 @@ const HeroSection = () => {
 
           {/* CTA Button */}
           <div className="pt-4">
-            <Button onClick={scrollToTeam} size="lg" className="bg-white/20 text-white border-white/30 hover:bg-white/30 backdrop-blur-sm text-lg px-8 py-3 transition-all duration-smooth shadow-blue-glow">
+            <Button 
+              onClick={scrollToTeam} 
+              size="lg" 
+              className="group bg-white/20 text-white border-white/30 hover:bg-white/30 backdrop-blur-sm text-lg px-8 py-3 transition-all duration-500 shadow-blue-glow hover:shadow-xl hover:shadow-blue-500/30 hover:scale-110"
+            >
               Conocer al Equipo
-              <ArrowDown className="ml-2 h-5 w-5" />
+              <ArrowDown className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-y-1 group-hover:animate-bounce" />
             </Button>
           </div>
         </div>
