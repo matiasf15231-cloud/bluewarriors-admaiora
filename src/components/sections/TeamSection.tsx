@@ -46,7 +46,7 @@ const TeamSection = () => {
     personality: "El sabio consejero que siempre cree en nosotros"
   }, {
     name: "Génesis Ogando",
-    role: "Profesora Asistente",
+    role: "Profesora Mentor",
     description: "Ayudo al equipo a resolver problemas técnicos y a mantener la motivación alta. Me encanta ver su progreso diario.",
     skills: ["Soporte Técnico", "Motivación", "Resolución"],
     icon: Users,
