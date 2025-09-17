@@ -24,7 +24,7 @@ const TeamSection = () => {
     icon: Wrench,
     personality: "El artista de las piezas LEGO y los engranajes"
   }, {
-    name: "Marian Jimenez",
+    name: "Mariam Jimenez",
     role: "Comunicadora",
     description: "Me apasiona comunicar nuestras ideas y proyectos. Creo que las mejores innovaciones deben ser compartidas con el mundo.",
     skills: ["Presentaciones", "Creatividad", "Storytelling"],
