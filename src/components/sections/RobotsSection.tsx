@@ -22,7 +22,7 @@ const RobotsSection = () => {
     month: "septiembre-2025",
     description: "Primer prototipo de desarrollo para pruebas y experimentación de la temporada 2025-2026.",
     features: ["Diseño modular", "Base de movimiento optimizada", "Sistema de sensores básico"],
-    tech: ["SpikePrime", "Sensores de color", "Motor básico"],
+    tech: ["SpikePrime", "Motor"],
     status: "Investigación"
   }];
   const skills = [{
