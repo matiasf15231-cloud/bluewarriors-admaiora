@@ -181,7 +181,7 @@ const RobotsSection = () => {
 
         {/* Gallery Preview */}
         <div className="mt-16 text-center">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Galería de Robots</h3>
+          <h3 className="text-2xl font-bold text-foreground mb-6">Galería</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {Array.from({
             length: 8
