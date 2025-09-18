@@ -87,7 +87,7 @@ const TeamSection = () => {
           const IconComponent = member.icon;
           return <Card 
               key={index} 
-              className="group hover:shadow-card transition-all duration-smooth bg-white/80 backdrop-blur-sm border-primary/10 hover:border-primary/30 animate-fade-in hover:scale-105 hover:-translate-y-2 cursor-pointer" 
+              className="group hover:shadow-card transition-all duration-700 bg-white/80 backdrop-blur-sm border-primary/10 hover:border-primary/30 animate-fade-in hover:scale-110 hover:-translate-y-6 cursor-pointer hover:shadow-2xl hover:shadow-primary/25" 
               style={{ 
                 animationDelay: `${index * 150}ms`,
                 animationFillMode: 'both'
@@ -95,26 +95,26 @@ const TeamSection = () => {
             >
                 <CardContent className="p-6 relative overflow-hidden">
                   {/* Background animation effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-all duration-500 -z-10"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-lg"></div>
                   
-                  <div className="text-center space-y-4 relative">
+                  <div className="text-center space-y-4 relative z-10">
                     {/* Icon with enhanced animation */}
-                    <div className="mx-auto w-16 h-16 bg-gradient-hero rounded-full flex items-center justify-center group-hover:shadow-blue-glow group-hover:scale-110 transition-all duration-300 group-hover:rotate-6">
+                    <div className="mx-auto w-16 h-16 bg-gradient-hero rounded-full flex items-center justify-center group-hover:shadow-blue-glow group-hover:scale-125 transition-all duration-500 group-hover:rotate-12 group-hover:animate-pulse">
                       <IconComponent className="h-8 w-8 text-white transition-all duration-300 group-hover:scale-125" />
                     </div>
                     
                     {/* Info with staggered animations */}
                     <div className="space-y-2">
-                      <h3 className="text-xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors duration-300">
+                      <h3 className="text-xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors duration-300 group-hover:scale-105">
                         {member.name}
                       </h3>
-                      <p className="text-primary font-semibold mb-2 group-hover:scale-105 transition-transform duration-300">
+                      <p className="text-primary font-semibold mb-2 group-hover:scale-110 transition-transform duration-300 group-hover:animate-pulse">
                         {member.role}
                       </p>
                       
                       {/* Personality badge - appears on hover */}
                       <div className="opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 mb-3">
-                        <Badge variant="outline" className="text-xs bg-accent/20 text-accent-foreground border-accent/30 font-medium">
+                        <Badge variant="outline" className="text-xs bg-accent/20 text-accent-foreground border-accent/30 font-medium group-hover:scale-105 transition-transform duration-300">
                           {member.personality}
                         </Badge>
                       </div>
@@ -130,15 +130,23 @@ const TeamSection = () => {
                         <Badge 
                           key={skillIndex} 
                           variant="secondary" 
-                          className="bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-300 transform hover:scale-110"
+                          className="bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-500 transform hover:scale-110 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-1 animate-fade-in"
                           style={{
-                            animationDelay: `${(index * 150) + (skillIndex * 100)}ms`
+                            animationDelay: `${(index * 150) + (skillIndex * 100)}ms`,
+                            animationFillMode: 'both'
                           }}
                         >
-                          {skill}
+                          <span className="group-hover:animate-pulse">{skill}</span>
                         </Badge>
                       )}
                     </div>
+                  </div>
+                  
+                  {/* Floating particles */}
+                  <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <div className="absolute top-2 right-2 w-1 h-1 bg-primary/40 rounded-full animate-ping" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="absolute bottom-2 left-2 w-1.5 h-1.5 bg-accent/30 rounded-full animate-ping" style={{ animationDelay: '0.3s' }}></div>
+                    <div className="absolute top-1/2 left-2 w-1 h-1 bg-primary/30 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
                   </div>
                   
                   {/* Hover indicator */}
@@ -152,7 +160,9 @@ const TeamSection = () => {
 
         {/* Team Values */}
         <div className="mt-16 text-center">
-          <h3 className="text-3xl font-bold text-foreground mb-8">Nuestros Valores</h3>
+          <h3 className="text-3xl font-bold text-foreground mb-8 animate-fade-in">
+            Nuestros <span className="text-primary animate-pulse">Valores</span>
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[{
             title: "Innovación",
@@ -172,9 +182,27 @@ const TeamSection = () => {
           }, {
             title: "Diversión",
             desc: "Disfrutamos cada momento del proceso de aprendizaje"
-          }].map((value, index) => <div key={index} className="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-primary/20">
-                <h4 className="font-bold text-primary mb-2">{value.title}</h4>
-                <p className="text-sm text-muted-foreground">{value.desc}</p>
+          }].map((value, index) => <div 
+                key={index} 
+                className="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-primary/20 hover:bg-white/80 hover:border-primary/40 transition-all duration-500 hover:scale-110 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 group cursor-pointer animate-fade-in relative overflow-hidden"
+                style={{ 
+                  animationDelay: `${index * 150}ms`,
+                  animationFillMode: 'both'
+                }}
+              >
+                <div className="relative z-10">
+                  <h4 className="font-bold text-primary mb-2 group-hover:scale-105 transition-all duration-300 group-hover:animate-pulse">{value.title}</h4>
+                  <p className="text-sm text-muted-foreground group-hover:text-foreground transition-all duration-300">{value.desc}</p>
+                </div>
+                
+                {/* Background glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-lg"></div>
+                
+                {/* Floating particles */}
+                <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-500">
+                  <div className="absolute top-1 right-1 w-1 h-1 bg-primary/40 rounded-full animate-ping" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="absolute bottom-1 left-1 w-1 h-1 bg-accent/30 rounded-full animate-ping" style={{ animationDelay: '0.4s' }}></div>
+                </div>
               </div>)}
           </div>
         </div>
