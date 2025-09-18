@@ -176,21 +176,35 @@ const RobotsSection = () => {
         </div>
 
         {/* Skills Section */}
-        <div className="bg-gradient-section rounded-2xl p-8 sm:p-12">
-          <h3 className="text-3xl font-bold text-center text-foreground mb-12">
-            Nuestras <span className="text-primary">Especialidades</span>
+        <div className="bg-gradient-section rounded-2xl p-8 sm:p-12 animate-fade-in">
+          <h3 className="text-3xl font-bold text-center text-foreground mb-12 animate-fade-in">
+            Nuestras <span className="text-primary animate-pulse">Especialidades</span>
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {skills.map((skill, index) => {
             const IconComponent = skill.icon;
-            return <div key={index} className="text-center space-y-4">
-                  <div className="mx-auto w-16 h-16 bg-gradient-hero rounded-full flex items-center justify-center shadow-blue-glow">
-                    <IconComponent className="h-8 w-8 text-white" />
+            return <div 
+                key={index} 
+                className="text-center space-y-4 group cursor-pointer animate-fade-in hover:scale-110 hover:-translate-y-4 transition-all duration-700 hover:shadow-2xl hover:shadow-primary/25"
+                style={{ 
+                  animationDelay: `${index * 200}ms`,
+                  animationFillMode: 'both'
+                }}
+              >
+                  <div className="mx-auto w-16 h-16 bg-gradient-hero rounded-full flex items-center justify-center shadow-blue-glow group-hover:shadow-blue-glow group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 group-hover:animate-pulse">
+                    <IconComponent className="h-8 w-8 text-white group-hover:scale-110 transition-all duration-300" />
                   </div>
-                  <h4 className="text-xl font-bold text-foreground">{skill.title}</h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <h4 className="text-xl font-bold text-foreground group-hover:text-primary transition-all duration-300 group-hover:scale-105">{skill.title}</h4>
+                  <p className="text-muted-foreground text-sm leading-relaxed group-hover:text-foreground transition-all duration-300">
                     {skill.description}
                   </p>
+                  
+                  {/* Floating particles effect */}
+                  <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary/30 rounded-full animate-ping" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-accent/40 rounded-full animate-ping" style={{ animationDelay: '0.3s' }}></div>
+                    <div className="absolute bottom-1/4 left-3/4 w-1.5 h-1.5 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+                  </div>
                 </div>;
           })}
           </div>
