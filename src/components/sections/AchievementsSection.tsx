@@ -118,15 +118,31 @@ const AchievementsSection = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {stats.map((stat, index) => {
           const IconComponent = stat.icon;
-          return <Card key={index} className="text-center hover:shadow-card transition-all duration-smooth border-primary/10 hover:border-primary/30 group">
-                <CardContent className="p-6">
-                  <div className="space-y-3">
-                    <div className="mx-auto w-12 h-12 bg-gradient-hero rounded-full flex items-center justify-center group-hover:shadow-blue-glow transition-all duration-smooth">
-                      <IconComponent className="h-6 w-6 text-white" />
+          return <Card 
+              key={index} 
+              className="text-center hover:shadow-card transition-all duration-700 border-primary/10 hover:border-primary/30 group cursor-pointer animate-fade-in hover:scale-110 hover:-translate-y-6 hover:shadow-2xl hover:shadow-primary/25"
+              style={{ 
+                animationDelay: `${index * 150}ms`,
+                animationFillMode: 'both'
+              }}
+            >
+                <CardContent className="p-6 relative overflow-hidden">
+                  <div className="space-y-3 relative z-10">
+                    <div className="mx-auto w-12 h-12 bg-gradient-hero rounded-full flex items-center justify-center group-hover:shadow-blue-glow transition-all duration-500 group-hover:scale-125 group-hover:rotate-12 group-hover:animate-pulse">
+                      <IconComponent className="h-6 w-6 text-white group-hover:scale-110 transition-all duration-300" />
                     </div>
-                    <div className="text-3xl font-bold text-primary">{stat.value}</div>
-                    <div className="text-sm font-semibold text-foreground">{stat.label}</div>
-                    <div className="text-xs text-muted-foreground">{stat.description}</div>
+                    <div className="text-3xl font-bold text-primary group-hover:scale-110 transition-all duration-300 group-hover:animate-pulse">{stat.value}</div>
+                    <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-all duration-300">{stat.label}</div>
+                    <div className="text-xs text-muted-foreground group-hover:text-foreground transition-all duration-300">{stat.description}</div>
+                  </div>
+                  
+                  {/* Background glow effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-lg"></div>
+                  
+                  {/* Floating particles */}
+                  <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <div className="absolute top-2 right-2 w-1 h-1 bg-primary/40 rounded-full animate-ping" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="absolute bottom-2 left-2 w-1.5 h-1.5 bg-accent/30 rounded-full animate-ping" style={{ animationDelay: '0.3s' }}></div>
                   </div>
                 </CardContent>
               </Card>;
@@ -134,10 +150,10 @@ const AchievementsSection = () => {
         </div>
 
         {/* Skills and Recognition */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-primary/20">
-          <div className="text-center mb-8">
+        <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-primary/20 animate-fade-in">
+          <div className="text-center mb-8 animate-fade-in" style={{ animationDelay: '200ms', animationFillMode: 'both' }}>
             <h3 className="text-3xl font-bold text-foreground mb-4">
-              Habilidades <span className="text-primary">Desarrolladas</span>
+              Habilidades <span className="text-primary animate-pulse">Desarrolladas</span>
             </h3>
             <p className="text-muted-foreground">
               A través de nuestra participación en FLL, hemos desarrollado una amplia gama de habilidades
@@ -145,8 +161,16 @@ const AchievementsSection = () => {
           </div>
           
           <div className="flex flex-wrap justify-center gap-3 mb-8">
-            {skills.map((skill, index) => <Badge key={index} variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 px-4 py-2 text-sm">
-                {skill}
+            {skills.map((skill, index) => <Badge 
+                key={index} 
+                variant="secondary" 
+                className="bg-primary/10 text-primary hover:bg-primary/20 px-4 py-2 text-sm cursor-pointer transition-all duration-500 hover:scale-110 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-1 animate-fade-in group"
+                style={{ 
+                  animationDelay: `${400 + index * 100}ms`,
+                  animationFillMode: 'both'
+                }}
+              >
+                <span className="group-hover:animate-pulse">{skill}</span>
               </Badge>)}
           </div>
 
