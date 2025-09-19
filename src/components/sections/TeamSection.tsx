@@ -70,7 +70,7 @@ const TeamSection = () => {
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed animate-fade-in" style={{ animationDelay: '200ms' }}>
               Somos 8 mentes creativas unidas por la pasión compartida de construir, programar y competir juntos.
             </p>
-            <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover:bg-white/70 hover:border-primary/40 transition-all duration-500 hover:shadow-lg animate-fade-in" style={{ animationDelay: '400ms' }}>
+            <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover:bg-card/70 hover:border-primary/40 transition-all duration-500 hover:shadow-lg animate-fade-in" style={{ animationDelay: '400ms' }}>
               <h3 className="text-2xl font-bold text-primary mb-4">Nuestra Historia</h3>
               <p className="text-foreground">
                 Desde 2022, hemos crecido como familia. Lo que comenzó como curiosidad por los robots 
@@ -87,7 +87,7 @@ const TeamSection = () => {
           const IconComponent = member.icon;
           return <Card 
               key={index} 
-              className="group hover:shadow-card transition-all duration-700 bg-white/80 backdrop-blur-sm border-primary/10 hover:border-primary/30 animate-fade-in hover:scale-110 hover:-translate-y-6 cursor-pointer hover:shadow-2xl hover:shadow-primary/25" 
+              className="group hover:shadow-card transition-all duration-700 bg-card/80 backdrop-blur-sm border-primary/10 hover:border-primary/30 animate-fade-in hover:scale-110 hover:-translate-y-6 cursor-pointer hover:shadow-2xl hover:shadow-primary/25" 
               style={{ 
                 animationDelay: `${index * 150}ms`,
                 animationFillMode: 'both'
@@ -184,7 +184,7 @@ const TeamSection = () => {
             desc: "Disfrutamos cada momento del proceso de aprendizaje"
           }].map((value, index) => <div 
                 key={index} 
-                className="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-primary/20 hover:bg-white/80 hover:border-primary/40 transition-all duration-500 hover:scale-110 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 group cursor-pointer animate-fade-in relative overflow-hidden"
+                className="bg-card/60 backdrop-blur-sm rounded-lg p-4 border border-primary/20 hover:bg-card/80 hover:border-primary/40 transition-all duration-500 hover:scale-110 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 group cursor-pointer animate-fade-in relative overflow-hidden"
                 style={{ 
                   animationDelay: `${index * 150}ms`,
                   animationFillMode: 'both'
