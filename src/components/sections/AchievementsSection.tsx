@@ -106,7 +106,7 @@ const AchievementsSection = () => {
                 
                 {/* Timeline dot */}
                 <div className="relative flex items-center justify-center">
-                  <div className={`w-4 h-4 ${achievement.bgColor} ${achievement.color} rounded-full border-4 border-white shadow-lg z-10`}></div>
+                  <div className={`w-4 h-4 ${achievement.bgColor} ${achievement.color} rounded-full border-4 border-card shadow-lg z-10`}></div>
                 </div>
                 
                 <div className="w-1/2"></div>
@@ -150,7 +150,7 @@ const AchievementsSection = () => {
         </div>
 
         {/* Skills and Recognition */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-primary/20 animate-fade-in">
+        <div className="bg-card/60 backdrop-blur-sm rounded-2xl p-8 border border-primary/20 animate-fade-in">
           <div className="text-center mb-8 animate-fade-in" style={{ animationDelay: '200ms', animationFillMode: 'both' }}>
             <h3 className="text-3xl font-bold text-foreground mb-4">
               Habilidades <span className="text-primary animate-pulse">Desarrolladas</span>
