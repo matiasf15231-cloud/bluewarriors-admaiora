@@ -24,6 +24,14 @@ const RobotsSection = () => {
     features: ["Diseño modular", "Base de movimiento optimizada", "Sistema de sensores básico"],
     tech: ["SpikePrime", "Motor"],
     status: "Investigación"
+  }, {
+    title: "Robot Prototipo #2",
+    date: "Septiembre 2025",
+    month: "septiembre-2025",
+    description: "Segundo prototipo con mejoras en el sistema de tracción y mayor complejidad mecánica.",
+    features: ["Tracción mejorada", "Sistema dual de motores", "Estructura reforzada"],
+    tech: ["SpikePrime", "Motor de tracción", "Motor auxiliar"],
+    status: "En desarrollo"
   }];
   const skills = [{
     icon: Code2,
@@ -132,7 +140,7 @@ const RobotsSection = () => {
                                   {feature}
                                 </Badge>)}
                               <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                                85 piezas
+                                {prototype.title === "Robot Prototipo #2" ? "96 piezas" : "85 piezas"}
                               </Badge>
                             </div>
                           </div>

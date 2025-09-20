@@ -11,14 +11,32 @@ import prototype1_4 from '@/assets/prototype-1-4.png';
 import prototype1_5 from '@/assets/prototype-1-5.png';
 import prototype1_6 from '@/assets/prototype-1-6.png';
 
-const photos = [
-  { src: prototype1_1, alt: 'Robot Prototipo #1 - Vista frontal', description: 'Vista frontal del robot con estructura de soporte' },
-  { src: prototype1_2, alt: 'Robot Prototipo #1 - Vista lateral', description: 'Vista lateral mostrando el SpikePrime y cables' },
-  { src: prototype1_3, alt: 'Robot Prototipo #1 - Vista trasera', description: 'Vista trasera del robot prototipo' },
-  { src: prototype1_4, alt: 'Robot Prototipo #1 - Otra vista lateral', description: 'Vista lateral derecha con detalles de construcción' },
-  { src: prototype1_5, alt: 'Robot Prototipo #1 - Vista interior', description: 'Vista interior mostrando componentes internos' },
-  { src: prototype1_6, alt: 'Robot Prototipo #1 - Vista superior', description: 'Vista superior con SpikePrime visible' },
-];
+// Import prototype #2 images
+import prototype2_1 from '@/assets/prototype-2-1.jpg';
+import prototype2_2 from '@/assets/prototype-2-2.jpg';
+import prototype2_3 from '@/assets/prototype-2-3.jpg';
+import prototype2_4 from '@/assets/prototype-2-4.jpg';
+import prototype2_5 from '@/assets/prototype-2-5.jpg';
+import prototype2_6 from '@/assets/prototype-2-6.jpg';
+
+const prototypePhotos = {
+  'Robot Prototipo #1': [
+    { src: prototype1_1, alt: 'Robot Prototipo #1 - Vista frontal', description: 'Vista frontal del robot con estructura de soporte' },
+    { src: prototype1_2, alt: 'Robot Prototipo #1 - Vista lateral', description: 'Vista lateral mostrando el SpikePrime y cables' },
+    { src: prototype1_3, alt: 'Robot Prototipo #1 - Vista trasera', description: 'Vista trasera del robot prototipo' },
+    { src: prototype1_4, alt: 'Robot Prototipo #1 - Otra vista lateral', description: 'Vista lateral derecha con detalles de construcción' },
+    { src: prototype1_5, alt: 'Robot Prototipo #1 - Vista interior', description: 'Vista interior mostrando componentes internos' },
+    { src: prototype1_6, alt: 'Robot Prototipo #1 - Vista superior', description: 'Vista superior con SpikePrime visible' },
+  ],
+  'Robot Prototipo #2': [
+    { src: prototype2_1, alt: 'Robot Prototipo #2 - Vista frontal', description: 'Vista frontal del prototipo mejorado con hub SpikePrime' },
+    { src: prototype2_2, alt: 'Robot Prototipo #2 - Vista inferior', description: 'Vista inferior mostrando la estructura del chasis' },
+    { src: prototype2_3, alt: 'Robot Prototipo #2 - Vista lateral con ruedas', description: 'Vista lateral derecha con ruedas y motor visible' },
+    { src: prototype2_4, alt: 'Robot Prototipo #2 - Vista lateral trasera', description: 'Vista lateral trasera mostrando las ruedas traseras' },
+    { src: prototype2_5, alt: 'Robot Prototipo #2 - Vista lateral izquierda', description: 'Vista lateral izquierda con detalles del motor' },
+    { src: prototype2_6, alt: 'Robot Prototipo #2 - Vista frontal cerrada', description: 'Vista frontal con estructura compacta cerrada' },
+  ]
+};
 
 interface PhotoGalleryModalProps {
   isOpen: boolean;
@@ -28,6 +46,9 @@ interface PhotoGalleryModalProps {
 
 const PhotoGalleryModal = ({ isOpen, onClose, prototypeTitle }: PhotoGalleryModalProps) => {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  
+  // Get photos for the selected prototype
+  const photos = prototypePhotos[prototypeTitle as keyof typeof prototypePhotos] || prototypePhotos['Robot Prototipo #1'];
 
   const nextPhoto = () => {
     setCurrentPhotoIndex((prev) => (prev + 1) % photos.length);
