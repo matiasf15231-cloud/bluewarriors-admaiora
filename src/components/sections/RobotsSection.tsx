@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Bot, Code2, Lightbulb, Zap, Play, ExternalLink } from 'lucide-react';
 import PhotoGalleryModal from '@/components/PhotoGalleryModal';
 const RobotsSection = () => {
-  const [selectedMonth, setSelectedMonth] = useState('all');
+  const [selectedMonth, setSelectedMonth] = useState('septiembre-2025');
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedPrototype, setSelectedPrototype] = useState('');
   const mainRobot = {
