@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Bot, Code2, Lightbulb, Zap, Play, ExternalLink } from 'lucide-react';
 import PhotoGalleryModal from '@/components/PhotoGalleryModal';
-import robotCompetition1 from '@/assets/robot-competition-1.jpg';
-import teamPhotoAwards from '@/assets/team-photo-awards.jpg';
+import robotTrabajoReal from '@/assets/robot-trabajo-real.png';
+import equipoMedallasReal from '@/assets/equipo-medallas-real.png';
 const RobotsSection = () => {
   const [selectedMonth, setSelectedMonth] = useState('septiembre-2025');
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -227,33 +227,20 @@ const RobotsSection = () => {
             {/* Real gallery images */}
             <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden">
               <img 
-                src={robotCompetition1} 
-                alt="Estudiante trabajando con robot en competencia FLL" 
+                src={robotTrabajoReal} 
+                alt="Estudiante del equipo Blue Warriors trabajando con robot en la mesa de competencia FLL Submerged" 
                 className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
             </div>
             <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
               <img 
-                src={teamPhotoAwards} 
-                alt="Equipo Blue Warriors celebrando con medallas y premios" 
+                src={equipoMedallasReal} 
+                alt="Equipo Blue Warriors celebrando con medallas y premios en competencia FLL" 
                 className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
             </div>
-            {Array.from({
-            length: 6
-          }).map((_, index) => <div 
-              key={index + 2} 
-              className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in"
-              style={{ 
-                animationDelay: `${(index + 2) * 100}ms`,
-                animationFillMode: 'both'
-              }}
-            >
-                <Bot className="h-8 w-8 text-primary group-hover:scale-125 group-hover:rotate-12 transition-all duration-300" />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
-              </div>)}
           </div>
           <Button 
             variant="outline" 
