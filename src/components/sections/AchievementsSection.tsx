@@ -5,7 +5,7 @@ const AchievementsSection = () => {
   const achievements = [{
     year: "2022/2023",
     position: "50° Puesto",
-    event: "Competencia Regional FLL",
+    event: "Superpowered",
     description: "Nuestro debut en FIRST LEGO League. Aprendimos mucho y sentamos las bases para el futuro.",
     highlights: ["Primera participación", "Experiencia invaluable", "Trabajo en equipo"],
     color: "text-muted-foreground",
@@ -13,7 +13,7 @@ const AchievementsSection = () => {
   }, {
     year: "2023/2024",
     position: "32° Puesto",
-    event: "Competencia Regional FLL",
+    event: "Masterpiece",
     description: "Continuamos mejorando y ganando experiencia. Un paso más hacia nuestras metas.",
     highlights: ["Mejora significativa", "Mejor estrategia", "Mayor coordinación"],
     color: "text-muted-foreground",
@@ -21,7 +21,7 @@ const AchievementsSection = () => {
   }, {
     year: "2024/2025",
     position: "12° Puesto",
-    event: "Competencia Regional FLL",
+    event: "Submerged",
     description: "Un gran salto en nuestro rendimiento. Llegamos al top 15 y seguimos creciendo.",
     highlights: ["Top 15", "Proyecto innovador", "Excelente presentación"],
     color: "text-accent",
@@ -29,7 +29,7 @@ const AchievementsSection = () => {
   }, {
     year: "2025/2026",
     position: "¡A Ganar!",
-    event: "Próxima Competencia",
+    event: "Unearthed",
     description: "Este año, estamos más preparados que nunca. Nuestro objetivo es llegar al primer lugar.",
     highlights: ["Robot optimizado", "Equipo experimentado", "Estrategia refinada"],
     color: "text-primary",
