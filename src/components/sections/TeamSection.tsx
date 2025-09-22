@@ -24,7 +24,7 @@ const TeamSection = () => {
     icon: Wrench,
     personality: "El artista de las piezas LEGO y los engranajes"
   }, {
-    name: "Mariam Jimenez",
+    name: "Mariam Jiménez",
     role: "Comunicadora",
     description: "Me apasiona comunicar nuestras ideas y proyectos. Creo que las mejores innovaciones deben ser compartidas con el mundo.",
     skills: ["Presentaciones", "Creatividad", "Storytelling"],
@@ -52,7 +52,7 @@ const TeamSection = () => {
     icon: Users,
     personality: "La que siempre encuentra una solución cuando todo parece imposible"
   }, {
-    name: "Ian Valdez",
+    name: "Ián Valdez",
     role: "Mentor",
     description: "Me dedico al desarrollo integral de cada miembro del equipo. Creo en el potencial ilimitado de cada joven.",
     skills: ["Desarrollo Personal", "Coaching", "Crecimiento"],
