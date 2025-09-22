@@ -6,6 +6,9 @@ import { Bot, Code2, Lightbulb, Zap, Play, ExternalLink } from 'lucide-react';
 import PhotoGalleryModal from '@/components/PhotoGalleryModal';
 import robotTrabajoReal from '@/assets/robot-trabajo-real.png';
 import equipoMedallasReal from '@/assets/equipo-medallas-real.png';
+import sesion1Foto3 from '@/assets/sesion-1-foto-3.jpg';
+import sesion1Foto4 from '@/assets/sesion-1-foto-4.jpg';
+import sesion1Foto5 from '@/assets/sesion-1-foto-5.jpg';
 const RobotsSection = () => {
   const [selectedMonth, setSelectedMonth] = useState('septiembre-2025');
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -220,34 +223,64 @@ const RobotsSection = () => {
           </div>
         </div>
 
-        {/* Gallery Preview */}
+        {/* Sessions Preview */}
         <div className="mt-16 text-center">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Galería</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {/* Real gallery images */}
-            <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden">
-              <img 
-                src={robotTrabajoReal} 
-                alt="Estudiante del equipo Blue Warriors trabajando con robot en la mesa de competencia FLL Submerged" 
-                className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
-            </div>
-            <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
-              <img 
-                src={equipoMedallasReal} 
-                alt="Equipo Blue Warriors celebrando con medallas y premios en competencia FLL" 
-                className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
+          <h3 className="text-2xl font-bold text-foreground mb-6">Sesiones</h3>
+          
+          {/* Session 1 */}
+          <div className="mb-8">
+            <h4 className="text-lg font-semibold text-primary mb-4">Sesión 1</h4>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+              {/* Session 1 photos */}
+              <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden">
+                <img 
+                  src={robotTrabajoReal} 
+                  alt="Estudiante del equipo Blue Warriors trabajando con robot en la mesa de competencia FLL Submerged" 
+                  className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
+              </div>
+              <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
+                <img 
+                  src={equipoMedallasReal} 
+                  alt="Equipo Blue Warriors celebrando con medallas y premios en competencia FLL" 
+                  className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
+              </div>
+              <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden" style={{ animationDelay: '200ms', animationFillMode: 'both' }}>
+                <img 
+                  src={sesion1Foto3} 
+                  alt="Equipo Blue Warriors trabajando en construcción y programación de robot FLL" 
+                  className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
+              </div>
+              <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden" style={{ animationDelay: '300ms', animationFillMode: 'both' }}>
+                <img 
+                  src={sesion1Foto4} 
+                  alt="Equipo Blue Warriors probando y debugueando robot en mesa de competencia FLL" 
+                  className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
+              </div>
+              <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden" style={{ animationDelay: '400ms', animationFillMode: 'both' }}>
+                <img 
+                  src={sesion1Foto5} 
+                  alt="Equipo Blue Warriors presentando su proyecto de robótica e innovación" 
+                  className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
+              </div>
             </div>
           </div>
+          
           <Button 
             variant="outline" 
             size="lg"
             className="group transition-all duration-500 hover:scale-110 hover:shadow-lg hover:shadow-primary/25"
           >
-            Ver Galería Completa
+            Ver Todas las Sesiones
             <ExternalLink className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-45" />
           </Button>
         </div>
