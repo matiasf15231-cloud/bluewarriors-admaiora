@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Bot, Code2, Lightbulb, Zap, Play, ExternalLink } from 'lucide-react';
 import PhotoGalleryModal from '@/components/PhotoGalleryModal';
+import robotCompetition1 from '@/assets/robot-competition-1.jpg';
+import teamPhotoAwards from '@/assets/team-photo-awards.jpg';
 const RobotsSection = () => {
   const [selectedMonth, setSelectedMonth] = useState('septiembre-2025');
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -222,13 +224,30 @@ const RobotsSection = () => {
         <div className="mt-16 text-center">
           <h3 className="text-2xl font-bold text-foreground mb-6">Galería</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            {/* Real gallery images */}
+            <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden">
+              <img 
+                src={robotCompetition1} 
+                alt="Estudiante trabajando con robot en competencia FLL" 
+                className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
+            </div>
+            <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
+              <img 
+                src={teamPhotoAwards} 
+                alt="Equipo Blue Warriors celebrando con medallas y premios" 
+                className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
+            </div>
             {Array.from({
-            length: 8
+            length: 6
           }).map((_, index) => <div 
-              key={index} 
+              key={index + 2} 
               className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in"
               style={{ 
-                animationDelay: `${index * 100}ms`,
+                animationDelay: `${(index + 2) * 100}ms`,
                 animationFillMode: 'both'
               }}
             >
