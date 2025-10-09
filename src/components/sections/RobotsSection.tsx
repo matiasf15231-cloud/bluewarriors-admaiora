@@ -10,7 +10,7 @@ import sesion1Foto3 from '@/assets/sesion-1-foto-3.jpg';
 import sesion1Foto4 from '@/assets/sesion-1-foto-4.jpg';
 import sesion1Foto5 from '@/assets/sesion-1-foto-5.jpg';
 const RobotsSection = () => {
-  const [selectedMonth, setSelectedMonth] = useState('septiembre-2025');
+  const [selectedMonth, setSelectedMonth] = useState('octubre-2025');
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedPrototype, setSelectedPrototype] = useState('');
   const mainRobot = {
