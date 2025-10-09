@@ -37,6 +37,14 @@ const RobotsSection = () => {
     features: ["Tracción mejorada", "Sistema dual de motores", "Estructura reforzada"],
     tech: ["SpikePrime", "Motor de tracción", "Motor auxiliar"],
     status: "En desarrollo"
+  }, {
+    title: "Robot Prototipo #3",
+    date: "Octubre 2025",
+    month: "octubre-2025",
+    description: "Tercer prototipo avanzado con sistema de tracción optimizado y arquitectura robusta para competencia.",
+    features: ["Sistema de tracción avanzado", "Arquitectura robusta", "Diseño compacto"],
+    tech: ["SpikePrime", "Motores duales", "Sensores integrados"],
+    status: "En desarrollo"
   }];
   const skills = [{
     icon: Code2,

@@ -19,6 +19,14 @@ import prototype2_4 from '@/assets/prototype-2-4.jpg';
 import prototype2_5 from '@/assets/prototype-2-5.jpg';
 import prototype2_6 from '@/assets/prototype-2-6.jpg';
 
+// Import prototype #3 images
+import prototype3_1 from '@/assets/prototype-3-1.jpg';
+import prototype3_2 from '@/assets/prototype-3-2.jpg';
+import prototype3_3 from '@/assets/prototype-3-3.jpg';
+import prototype3_4 from '@/assets/prototype-3-4.jpg';
+import prototype3_5 from '@/assets/prototype-3-5.jpg';
+import prototype3_6 from '@/assets/prototype-3-6.jpg';
+
 const prototypePhotos = {
   'Robot Prototipo #1': [
     { src: prototype1_1, alt: 'Robot Prototipo #1 - Vista frontal', description: 'Vista frontal del robot con estructura de soporte' },
@@ -35,6 +43,14 @@ const prototypePhotos = {
     { src: prototype2_4, alt: 'Robot Prototipo #2 - Vista lateral trasera', description: 'Vista lateral trasera mostrando las ruedas traseras' },
     { src: prototype2_5, alt: 'Robot Prototipo #2 - Vista lateral izquierda', description: 'Vista lateral izquierda con detalles del motor' },
     { src: prototype2_6, alt: 'Robot Prototipo #2 - Vista frontal cerrada', description: 'Vista frontal con estructura compacta cerrada' },
+  ],
+  'Robot Prototipo #3': [
+    { src: prototype3_1, alt: 'Robot Prototipo #3 - Vista superior', description: 'Vista superior mostrando hub SpikePrime y disposición de componentes' },
+    { src: prototype3_2, alt: 'Robot Prototipo #3 - Vista inferior con ruedas', description: 'Vista inferior con sistema de tracción y ruedas optimizadas' },
+    { src: prototype3_3, alt: 'Robot Prototipo #3 - Vista lateral izquierda', description: 'Vista lateral izquierda con estructura compacta y motores' },
+    { src: prototype3_4, alt: 'Robot Prototipo #3 - Vista lateral derecha', description: 'Vista lateral derecha mostrando cables y conexiones' },
+    { src: prototype3_5, alt: 'Robot Prototipo #3 - Vista frontal', description: 'Vista frontal con hub SpikePrime visible' },
+    { src: prototype3_6, alt: 'Robot Prototipo #3 - Vista interior', description: 'Vista interior mostrando arquitectura interna y cableado' },
   ]
 };
 
