@@ -41,8 +41,8 @@ const RobotsSection = () => {
     title: "Robot Prototipo #3",
     date: "Octubre 2025",
     month: "octubre-2025",
-    description: "Tercer prototipo avanzado con sistema de tracción optimizado y arquitectura robusta para competencia.",
-    features: ["Sistema de tracción avanzado", "Arquitectura robusta", "Diseño compacto"],
+    description: "Tercer prototipo avanzado con estructura más grande, sistema de tracción optimizado y arquitectura robusta para competencia.",
+    features: ["Estructura más grande", "Sistema de tracción avanzado", "Arquitectura robusta"],
     tech: ["SpikePrime", "Motores duales", "Sensores integrados"],
     status: "En desarrollo"
   }];
@@ -153,8 +153,13 @@ const RobotsSection = () => {
                                   {feature}
                                 </Badge>)}
                               <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                                {prototype.title === "Robot Prototipo #2" ? "96 piezas" : "85 piezas"}
+                                {prototype.title === "Robot Prototipo #3" ? "110 piezas" : prototype.title === "Robot Prototipo #2" ? "96 piezas" : "85 piezas"}
                               </Badge>
+                              {prototype.title === "Robot Prototipo #3" && (
+                                <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                                  49 de carcasa
+                                </Badge>
+                              )}
                             </div>
                           </div>
                           
