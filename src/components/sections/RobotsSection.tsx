@@ -248,15 +248,9 @@ const RobotsSection = () => {
             <h4 className="text-lg font-semibold text-primary mb-4">Sesión {selectedSession}</h4>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8 min-h-[200px]">
               {(() => {
-                // Define session photos here - empty for now except session 1
+                // Define session photos here - all empty for now
                 const sessionPhotos: Record<number, Array<{src: string, alt: string}>> = {
-                  1: [
-                    { src: robotTrabajoReal, alt: "Estudiante del equipo Blue Warriors trabajando con robot en la mesa de competencia FLL Submerged" },
-                    { src: equipoMedallasReal, alt: "Equipo Blue Warriors celebrando con medallas y premios en competencia FLL" },
-                    { src: sesion1Foto3, alt: "Equipo Blue Warriors trabajando en construcción y programación de robot FLL" },
-                    { src: sesion1Foto4, alt: "Equipo Blue Warriors probando y debugueando robot en mesa de competencia FLL" },
-                    { src: sesion1Foto5, alt: "Equipo Blue Warriors presentando su proyecto de robótica e innovación" }
-                  ],
+                  1: [],
                   2: [],
                   3: [],
                   4: [],
