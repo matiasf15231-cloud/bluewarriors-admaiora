@@ -250,7 +250,7 @@ const RobotsSection = () => {
               {(() => {
                 // Define session photos here - all empty for now
                 const sessionPhotos: Record<number, Array<{src: string, alt: string}>> = Object.fromEntries(
-                  Array.from({ length: 34 }, (_, i) => [i + 1, []])
+                  Array.from({ length: 12 }, (_, i) => [i + 1, []])
                 );
                 
                 const photos = sessionPhotos[selectedSession] || [];
@@ -297,7 +297,7 @@ const RobotsSection = () => {
                 <DialogTitle>Seleccionar Sesión</DialogTitle>
               </DialogHeader>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 max-h-[60vh] overflow-y-auto">
-                {Array.from({ length: 34 }, (_, i) => i + 1).map((session) => (
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((session) => (
                   <Button
                     key={session}
                     variant={selectedSession === session ? "default" : "outline"}
