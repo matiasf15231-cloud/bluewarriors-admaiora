@@ -249,13 +249,9 @@ const RobotsSection = () => {
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8 min-h-[200px]">
               {(() => {
                 // Define session photos here - all empty for now
-                const sessionPhotos: Record<number, Array<{src: string, alt: string}>> = {
-                  1: [],
-                  2: [],
-                  3: [],
-                  4: [],
-                  5: []
-                };
+                const sessionPhotos: Record<number, Array<{src: string, alt: string}>> = Object.fromEntries(
+                  Array.from({ length: 34 }, (_, i) => [i + 1, []])
+                );
                 
                 const photos = sessionPhotos[selectedSession] || [];
                 
@@ -300,8 +296,8 @@ const RobotsSection = () => {
               <DialogHeader>
                 <DialogTitle>Seleccionar Sesión</DialogTitle>
               </DialogHeader>
-              <div className="grid grid-cols-2 gap-4 py-4">
-                {[1, 2, 3, 4, 5].map((session) => (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 max-h-[60vh] overflow-y-auto">
+                {Array.from({ length: 34 }, (_, i) => i + 1).map((session) => (
                   <Button
                     key={session}
                     variant={selectedSession === session ? "default" : "outline"}
@@ -309,7 +305,7 @@ const RobotsSection = () => {
                       setSelectedSession(session);
                       setIsSessionDialogOpen(false);
                     }}
-                    className="h-20 text-lg transition-all duration-300 hover:scale-105"
+                    className="h-16 text-lg transition-all duration-300 hover:scale-105"
                   >
                     Sesión {session}
                   </Button>
