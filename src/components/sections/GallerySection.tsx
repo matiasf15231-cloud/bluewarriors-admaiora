@@ -21,6 +21,10 @@ const GallerySection = () => {
     name: 'Excursiones',
     icon: ExternalLink
   }, {
+    id: 'profesionales',
+    name: 'Sesiones con Profesionales',
+    icon: Users
+  }, {
     id: 'videos',
     name: 'Videos',
     icon: Video
