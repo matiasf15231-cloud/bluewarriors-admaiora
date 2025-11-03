@@ -25,6 +25,10 @@ const GallerySection = () => {
     name: 'Sesiones con Profesionales',
     icon: Users
   }, {
+    id: 'mesa',
+    name: 'Mesa',
+    icon: Bot
+  }, {
     id: 'videos',
     name: 'Videos',
     icon: Video
