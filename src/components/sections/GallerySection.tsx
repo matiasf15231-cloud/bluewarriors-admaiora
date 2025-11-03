@@ -9,21 +9,21 @@ const GallerySection = () => {
   
   const mediaItems = [
     {
-      src: '/1.png',
+      src: '/placeholder.svg',
       title: 'Estrategia en la Mesa',
       description: 'Planificando los movimientos y misiones del robot en el campo de juego.',
       category: 'mesa',
       type: 'photo',
     },
     {
-      src: '/2.png',
+      src: '/placeholder.svg',
       title: 'Pruebas de Campo',
       description: 'Ejecutando pruebas para calibrar la precisión y eficiencia del robot.',
       category: 'mesa',
       type: 'photo',
     },
     {
-      src: '/3.png',
+      src: '/placeholder.svg',
       title: 'Construcción y Ajustes',
       description: 'El equipo trabajando en los detalles finales de los mecanismos del robot.',
       category: 'mesa',
