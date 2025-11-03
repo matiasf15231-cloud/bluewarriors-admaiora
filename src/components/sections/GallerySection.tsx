@@ -4,26 +4,31 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink } from 'lucide-react';
 
+// Import images from the assets folder
+import image1 from '@/assets/robot-competition-1.jpg';
+import image2 from '@/assets/team-photo-awards.jpg';
+import image3 from '@/assets/sesion-1-foto-3.jpg';
+
 const GallerySection = () => {
   const [activeTab, setActiveTab] = useState('all');
   
   const mediaItems = [
     {
-      src: '/placeholder.svg',
+      src: image1,
       title: 'Estrategia en la Mesa',
       description: 'Planificando los movimientos y misiones del robot en el campo de juego.',
       category: 'mesa',
       type: 'photo',
     },
     {
-      src: '/placeholder.svg',
+      src: image2,
       title: 'Pruebas de Campo',
       description: 'Ejecutando pruebas para calibrar la precisión y eficiencia del robot.',
       category: 'mesa',
       type: 'photo',
     },
     {
-      src: '/placeholder.svg',
+      src: image3,
       title: 'Construcción y Ajustes',
       description: 'El equipo trabajando en los detalles finales de los mecanismos del robot.',
       category: 'mesa',
@@ -61,7 +66,7 @@ const GallerySection = () => {
   
   return (
     <section id="galeria" className="py-20 bg-gradient-section">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm-px-6 lg-px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
             Galería <span className="text-primary">Multimedia</span>
