@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink } from 'lucide-react';
 
-// Import images from the assets folder
-import image1 from '@/assets/robot-competition-1.jpg';
-import image2 from '@/assets/team-photo-awards.jpg';
-import image3 from '@/assets/sesion-1-foto-3.jpg';
+// Import user-provided images
+import image1 from '@/assets/IMG_0537.png';
+import image2 from '@/assets/IMG_0539.png';
+import image3 from '@/assets/IMG_0540.png';
 
 const GallerySection = () => {
   const [activeTab, setActiveTab] = useState('all');
