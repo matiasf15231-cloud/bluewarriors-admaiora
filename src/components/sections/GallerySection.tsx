@@ -25,10 +25,6 @@ const GallerySection = () => {
     name: 'Sesiones con Profesionales',
     icon: Users
   }, {
-    id: 'mesa',
-    name: 'Mesa',
-    icon: Bot
-  }, {
     id: 'videos',
     name: 'Videos',
     icon: Video
@@ -37,7 +33,7 @@ const GallerySection = () => {
   
   return (
     <section id="galeria" className="py-20 bg-gradient-section">
-      <div className="max-w-7xl mx-auto px-4 sm-px-6 lg-px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
             Galería <span className="text-primary">Multimedia</span>
