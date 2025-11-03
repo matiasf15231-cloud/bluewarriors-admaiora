@@ -3,10 +3,33 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink } from 'lucide-react';
+
 const GallerySection = () => {
   const [activeTab, setActiveTab] = useState('all');
-  // Contenido vacío por ahora, se agregará después
-  const mediaItems = [];
+  
+  const mediaItems = [
+    {
+      src: '/1.png',
+      title: 'Estrategia en la Mesa',
+      description: 'Planificando los movimientos y misiones del robot en el campo de juego.',
+      category: 'mesa',
+      type: 'photo',
+    },
+    {
+      src: '/2.png',
+      title: 'Pruebas de Campo',
+      description: 'Ejecutando pruebas para calibrar la precisión y eficiencia del robot.',
+      category: 'mesa',
+      type: 'photo',
+    },
+    {
+      src: '/3.png',
+      title: 'Construcción y Ajustes',
+      description: 'El equipo trabajando en los detalles finales de los mecanismos del robot.',
+      category: 'mesa',
+      type: 'photo',
+    },
+  ];
   
   const categories = [{
     id: 'all',
@@ -33,6 +56,7 @@ const GallerySection = () => {
     name: 'Videos',
     icon: Video
   }];
+  
   const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab);
   
   return (
@@ -90,33 +114,37 @@ const GallerySection = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredItems.map((item, index) => {
-                const IconComponent = item.icon;
                 return (
                   <Card 
                     key={index} 
-                    className="group hover:shadow-blue-glow transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer animate-fade-in"
+                    className="group overflow-hidden hover:shadow-blue-glow transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer animate-fade-in"
                     style={{ 
                       animationDelay: `${index * 150}ms`,
                       animationFillMode: 'both'
                     }}
                   >
-                    <CardContent className="p-6">
-                      <div className="aspect-video bg-muted/10 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-primary/5 transition-all duration-300">
-                        <IconComponent className="h-12 w-12 text-muted-foreground transition-all duration-300 group-hover:scale-125 group-hover:text-primary group-hover:rotate-12" />
+                    <CardContent className="p-0">
+                      <div className="aspect-video relative overflow-hidden">
+                        <img 
+                          src={item.src} 
+                          alt={item.title} 
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
                         {item.type === 'video' && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-all duration-300">
-                            <Play className="h-8 w-8 text-white transition-all duration-300 group-hover:scale-110" />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-all duration-300">
+                            <Play className="h-12 w-12 text-white/80 transition-all duration-300 group-hover:scale-110 group-hover:text-white" />
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                       </div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="secondary" className="transition-all duration-300 group-hover:bg-primary group-hover:text-white">
-                          {item.type === 'video' ? 'Video' : 'Foto'}
-                        </Badge>
+                      <div className="p-6">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge variant="secondary" className="transition-all duration-300 group-hover:bg-primary group-hover:text-white">
+                            {item.type === 'video' ? 'Video' : 'Foto'}
+                          </Badge>
+                        </div>
+                        <h3 className="font-semibold text-lg text-foreground mb-2 transition-colors duration-300 group-hover:text-primary">{item.title}</h3>
+                        <p className="text-muted-foreground text-sm transition-colors duration-300 group-hover:text-foreground">{item.description}</p>
                       </div>
-                      <h3 className="font-semibold text-lg text-foreground mb-2 transition-colors duration-300 group-hover:text-primary">{item.title}</h3>
-                      <p className="text-muted-foreground text-sm transition-colors duration-300 group-hover:text-foreground">{item.description}</p>
                     </CardContent>
                   </Card>
                 );
