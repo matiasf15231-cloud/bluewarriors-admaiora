@@ -1,6 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, Code, Wrench, Lightbulb, Star, Target } from 'lucide-react';
+import { Users, Code, Wrench, Lightbulb, Star, Target, FileText, Grid, Blocks } from 'lucide-react';
+
 const TeamSection = () => {
   const teamMembers = [{
     name: "Oscar Luis",
@@ -37,6 +38,27 @@ const TeamSection = () => {
     skills: ["Organización", "Logística", "Planificación"],
     icon: Target,
     personality: "El guardián del orden y la eficiencia"
+  }, {
+    name: "Juan Felipe",
+    role: "Redactor del equipo",
+    description: "Me encargo de contar nuestra historia, documentar cada proyecto y comunicar nuestras ideas de forma clara y creativa.",
+    skills: ["Redacción", "Documentación", "Storytelling"],
+    icon: FileText,
+    personality: "El que narra nuestras aventuras y logros"
+  }, {
+    name: "Derek Hidalgo",
+    role: "Encargado de Mesa",
+    description: "Mi misión es dominar la mesa de competencia. Analizo cada misión para optimizar nuestras jugadas y asegurar la máxima puntuación.",
+    skills: ["Estrategia", "Precisión", "Optimización"],
+    icon: Grid,
+    personality: "El estratega que conoce cada rincón del campo"
+  }, {
+    name: "Armando Hache",
+    role: "Constructor",
+    description: "Disfruto ensamblando piezas y dando vida a los robots. Me enfoco en crear estructuras robustas y mecanismos ingeniosos.",
+    skills: ["Construcción", "Mecánica", "Diseño LEGO"],
+    icon: Blocks,
+    personality: "El arquitecto que transforma ideas en robots sólidos"
   }, {
     name: "Franklin Vargas",
     role: "Profesor Mentor",
