@@ -2,20 +2,14 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Bot, Code2, Lightbulb, Zap, Play, ExternalLink } from 'lucide-react';
 import PhotoGalleryModal from '@/components/PhotoGalleryModal';
-import robotTrabajoReal from '@/assets/robot-trabajo-real.png';
-import equipoMedallasReal from '@/assets/equipo-medallas-real.png';
-import sesion1Foto3 from '@/assets/sesion-1-foto-3.jpg';
-import sesion1Foto4 from '@/assets/sesion-1-foto-4.jpg';
-import sesion1Foto5 from '@/assets/sesion-1-foto-5.jpg';
+
 const RobotsSection = () => {
   const [selectedMonth, setSelectedMonth] = useState('octubre-2025');
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedPrototype, setSelectedPrototype] = useState('');
-  const [selectedSession, setSelectedSession] = useState(1);
-  const [isSessionDialogOpen, setIsSessionDialogOpen] = useState(false);
+
   const mainRobot = {
     title: "Robot Competidor 2026",
     type: "Robot Principal",
@@ -237,82 +231,6 @@ const RobotsSection = () => {
                 </div>;
           })}
           </div>
-        </div>
-
-        {/* Sessions Preview */}
-        <div className="mt-16 text-center">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Sesiones</h3>
-          
-          {/* Session Display */}
-          <div className="mb-8">
-            <h4 className="text-lg font-semibold text-primary mb-4">Sesión {selectedSession}</h4>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8 min-h-[200px]">
-              {(() => {
-                // Define session photos here - all empty for now
-                const sessionPhotos: Record<number, Array<{src: string, alt: string}>> = Object.fromEntries(
-                  Array.from({ length: 12 }, (_, i) => [i + 1, []])
-                );
-                
-                const photos = sessionPhotos[selectedSession] || [];
-                
-                if (photos.length === 0) {
-                  return (
-                    <div className="col-span-full flex items-center justify-center py-12">
-                      <p className="text-muted-foreground">No hay fotos disponibles para esta sesión</p>
-                    </div>
-                  );
-                }
-                
-                return photos.map((photo, index) => (
-                  <div 
-                    key={index}
-                    className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-pointer group hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/25 animate-fade-in overflow-hidden"
-                    style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
-                  >
-                    <img 
-                      src={photo.src} 
-                      alt={photo.alt} 
-                      className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" 
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg"></div>
-                  </div>
-                ));
-              })()}
-            </div>
-          </div>
-          
-          <Dialog open={isSessionDialogOpen} onOpenChange={setIsSessionDialogOpen}>
-            <DialogTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="group transition-all duration-500 hover:scale-110 hover:shadow-lg hover:shadow-primary/25"
-              >
-                Ver Todas las Sesiones
-                <ExternalLink className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-45" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Seleccionar Sesión</DialogTitle>
-              </DialogHeader>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 max-h-[60vh] overflow-y-auto">
-                {Array.from({ length: 12 }, (_, i) => i + 1).map((session) => (
-                  <Button
-                    key={session}
-                    variant={selectedSession === session ? "default" : "outline"}
-                    onClick={() => {
-                      setSelectedSession(session);
-                      setIsSessionDialogOpen(false);
-                    }}
-                    className="h-16 text-lg transition-all duration-300 hover:scale-105"
-                  >
-                    Sesión {session}
-                  </Button>
-                ))}
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
 
         {/* Photo Gallery Modal */}
