@@ -3,15 +3,26 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink } from 'lucide-react';
+import ImageModal from '@/components/ImageModal';
 
 // Import user-provided images
 import image1 from '@/assets/IMG_0538.png';
 import image2 from '@/assets/IMG_0539.png';
 
+interface MediaItem {
+  src: string;
+  title: string;
+  description: string;
+  category: string;
+  type: 'photo' | 'video';
+}
+
 const GallerySection = () => {
   const [activeTab, setActiveTab] = useState('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<MediaItem | null>(null);
   
-  const mediaItems = [
+  const mediaItems: MediaItem[] = [
     {
       src: image1,
       title: 'Preparando la Misión',
@@ -55,6 +66,19 @@ const GallerySection = () => {
   }];
   
   const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab);
+
+  const handleImageClick = (item: MediaItem) => {
+    if (item.type === 'photo') {
+      setSelectedImage(item);
+      setIsModalOpen(true);
+    }
+    // Future: Handle video clicks here
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedImage(null);
+  };
   
   return (
     <section id="galeria" className="py-20 bg-gradient-section">
@@ -119,6 +143,7 @@ const GallerySection = () => {
                       animationDelay: `${index * 150}ms`,
                       animationFillMode: 'both'
                     }}
+                    onClick={() => handleImageClick(item)}
                   >
                     <CardContent className="p-0">
                       <div className="aspect-video relative overflow-hidden">
@@ -150,6 +175,12 @@ const GallerySection = () => {
           )}
         </div>
       </div>
+
+      <ImageModal 
+        isOpen={isModalOpen} 
+        onClose={handleCloseModal} 
+        image={selectedImage} 
+      />
     </section>
   );
 };
