@@ -5,9 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink } from 'lucide-react';
 import GalleryModal from '@/components/GalleryModal';
 
-// Import user-provided images
+// Import user-provided images and video
 import image1 from '@/assets/IMG_0538.png';
 import image2 from '@/assets/IMG_0539.png';
+import video1 from '@/assets/IMG_0547.mp4';
 
 interface MediaItem {
   src: string;
@@ -37,6 +38,13 @@ const GallerySection = () => {
       category: 'mesa',
       type: 'photo',
     },
+    {
+      src: video1,
+      title: 'Robot en Acción',
+      description: 'Nuestro robot completando una de las misiones de la temporada.',
+      category: 'mesa',
+      type: 'video',
+    },
   ];
   
   const categories = [{
@@ -65,7 +73,7 @@ const GallerySection = () => {
     icon: Video
   }];
   
-  const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === active-tab);
+  const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab);
 
   const handleImageClick = (index: number) => {
     setSelectedImageIndex(index);
@@ -144,15 +152,25 @@ const GallerySection = () => {
                     <CardContent className="p-0">
                       <div className="aspect-video relative overflow-hidden">
                         <img 
-                          src={item.src} 
+                          src={item.type === 'photo' ? item.src : ''} // Placeholder for video thumbnail if needed
                           alt={item.title} 
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          style={{ display: item.type === 'photo' ? 'block' : 'none' }}
                         />
                         {item.type === 'video' && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-all duration-300">
-                            <Play className="h-12 w-12 text-white/80 transition-all duration-300 group-hover:scale-110 group-hover:text-white" />
-                          </div>
+                          <video
+                            src={item.src}
+                            muted
+                            loop
+                            playsInline
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
                         )}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/20 transition-all duration-300">
+                          {item.type === 'video' && (
+                            <Play className="h-12 w-12 text-white/80 transition-all duration-300 group-hover:scale-110 group-hover:text-white" />
+                          )}
+                        </div>
                       </div>
                       <div className="p-6">
                         <div className="flex items-center gap-2 mb-2">
@@ -175,7 +193,7 @@ const GallerySection = () => {
       <GalleryModal 
         isOpen={isModalOpen} 
         onClose={handleCloseModal} 
-        images={filteredItems} 
+        media={filteredItems} 
         startIndex={selectedImageIndex}
       />
     </section>
