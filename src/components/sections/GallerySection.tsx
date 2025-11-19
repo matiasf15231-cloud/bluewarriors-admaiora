@@ -5,9 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink } from 'lucide-react';
 
 // Import user-provided images
-import image1 from '@/assets/IMG_0537.png';
+import image1 from '@/assets/IMG_0538.png';
 import image2 from '@/assets/IMG_0539.png';
-import image3 from '@/assets/IMG_0540.png';
 
 const GallerySection = () => {
   const [activeTab, setActiveTab] = useState('all');
@@ -15,22 +14,15 @@ const GallerySection = () => {
   const mediaItems = [
     {
       src: image1,
-      title: 'Estrategia en la Mesa',
-      description: 'Planificando los movimientos y misiones del robot en el campo de juego.',
+      title: 'Preparando la Misión',
+      description: 'Ajustando el robot para una de las misiones en la mesa de FLL.',
       category: 'mesa',
       type: 'photo',
     },
     {
       src: image2,
-      title: 'Pruebas de Campo',
-      description: 'Ejecutando pruebas para calibrar la precisión y eficiencia del robot.',
-      category: 'mesa',
-      type: 'photo',
-    },
-    {
-      src: image3,
-      title: 'Construcción y Ajustes',
-      description: 'El equipo trabajando en los detalles finales de los mecanismos del robot.',
+      title: 'Robot en la Mesa',
+      description: 'Vista del robot y la mesa de competencia durante una sesión de práctica.',
       category: 'mesa',
       type: 'photo',
     },
