@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink } from 'lucide-react';
-import ImageModal from '@/components/ImageModal';
+import GalleryModal from '@/components/GalleryModal';
 
 // Import user-provided images
 import image1 from '@/assets/IMG_0538.png';
@@ -20,7 +20,7 @@ interface MediaItem {
 const GallerySection = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<MediaItem | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   
   const mediaItems: MediaItem[] = [
     {
@@ -65,19 +65,15 @@ const GallerySection = () => {
     icon: Video
   }];
   
-  const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab);
+  const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === active-tab);
 
-  const handleImageClick = (item: MediaItem) => {
-    if (item.type === 'photo') {
-      setSelectedImage(item);
-      setIsModalOpen(true);
-    }
-    // Future: Handle video clicks here
+  const handleImageClick = (index: number) => {
+    setSelectedImageIndex(index);
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedImage(null);
   };
   
   return (
@@ -143,7 +139,7 @@ const GallerySection = () => {
                       animationDelay: `${index * 150}ms`,
                       animationFillMode: 'both'
                     }}
-                    onClick={() => handleImageClick(item)}
+                    onClick={() => handleImageClick(index)}
                   >
                     <CardContent className="p-0">
                       <div className="aspect-video relative overflow-hidden">
@@ -176,10 +172,11 @@ const GallerySection = () => {
         </div>
       </div>
 
-      <ImageModal 
+      <GalleryModal 
         isOpen={isModalOpen} 
         onClose={handleCloseModal} 
-        image={selectedImage} 
+        images={filteredItems} 
+        startIndex={selectedImageIndex}
       />
     </section>
   );
