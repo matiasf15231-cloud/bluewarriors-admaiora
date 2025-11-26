@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +8,6 @@ import GalleryModal from '@/components/GalleryModal';
 // Import user-provided images
 import image1 from '@/assets/IMG_0538.png';
 import image2 from '@/assets/IMG_0539.png';
-import videoProfesionales1 from '@/assets/sesion-profesionales-1.mp4';
 
 interface MediaItem {
   src: string;
@@ -37,13 +36,6 @@ const GallerySection = () => {
       description: 'Vista del robot y la mesa de competencia durante una sesión de práctica.',
       category: 'mesa',
       type: 'photo',
-    },
-    {
-      src: videoProfesionales1,
-      title: 'Sesión con Profesionales',
-      description: 'Compartiendo experiencias y aprendizajes con expertos de la industria.',
-      category: 'profesionales',
-      type: 'video',
     },
   ];
   
@@ -77,12 +69,7 @@ const GallerySection = () => {
     icon: Video
   }];
   
-  const filteredItems =
-    activeTab === 'all'
-      ? mediaItems
-      : activeTab === 'videos'
-      ? mediaItems.filter((item) => item.type === 'video')
-      : mediaItems.filter((item) => item.category === activeTab);
+  const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab);
 
   const handleImageClick = (index: number) => {
     setSelectedImageIndex(index);
@@ -148,23 +135,6 @@ const GallerySection = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredItems.map((item, index) => {
-                const videoRef = useRef<HTMLVideoElement>(null);
-
-                const handleMouseEnter = () => {
-                  if (videoRef.current) {
-                    videoRef.current.play().catch(error => {
-                      console.error("Video play failed:", error);
-                    });
-                  }
-                };
-
-                const handleMouseLeave = () => {
-                  if (videoRef.current) {
-                    videoRef.current.pause();
-                    videoRef.current.currentTime = 0;
-                  }
-                };
-
                 return (
                   <Card 
                     key={index} 
@@ -174,20 +144,17 @@ const GallerySection = () => {
                       animationFillMode: 'both'
                     }}
                     onClick={() => handleImageClick(index)}
-                    onMouseEnter={item.type === 'video' ? handleMouseEnter : undefined}
-                    onMouseLeave={item.type === 'video' ? handleMouseLeave : undefined}
                   >
                     <CardContent className="p-0">
                       <div className="aspect-video relative overflow-hidden">
-                        {item.type === 'photo' ? (
-                          <img 
-                            src={item.src}
-                            alt={item.title} 
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                        ) : (
+                        <img 
+                          src={item.type === 'photo' ? item.src : ''} // Placeholder for video thumbnail if needed
+                          alt={item.title} 
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          style={{ display: item.type === 'photo' ? 'block' : 'none' }}
+                        />
+                        {item.type === 'video' && (
                           <video
-                            ref={videoRef}
                             src={item.src}
                             muted
                             loop
@@ -197,9 +164,7 @@ const GallerySection = () => {
                         )}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/20 transition-all duration-300">
                           {item.type === 'video' && (
-                            <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110">
-                              <Play className="h-8 w-8 text-white/90" />
-                            </div>
+                            <Play className="h-12 w-12 text-white/80 transition-all duration-300 group-hover:scale-110 group-hover:text-white" />
                           )}
                         </div>
                       </div>
