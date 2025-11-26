@@ -5,10 +5,9 @@ import { Badge } from '@/components/ui/badge';
 import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink } from 'lucide-react';
 import GalleryModal from '@/components/GalleryModal';
 
-// Import user-provided images and video
+// Import user-provided images
 import image1 from '@/assets/IMG_0538.png';
 import image2 from '@/assets/IMG_0539.png';
-import video1 from '@/assets/IMG_0547.mp4';
 
 interface MediaItem {
   src: string;
@@ -37,13 +36,6 @@ const GallerySection = () => {
       description: 'Vista del robot y la mesa de competencia durante una sesión de práctica.',
       category: 'mesa',
       type: 'photo',
-    },
-    {
-      src: video1,
-      title: 'Robot en Acción',
-      description: 'Nuestro robot completando una de las misiones de la temporada.',
-      category: 'mesa',
-      type: 'video',
     },
   ];
   
