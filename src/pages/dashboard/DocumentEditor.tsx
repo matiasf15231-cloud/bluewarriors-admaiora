@@ -3,12 +3,58 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import Tiptap from '@/components/editor/Tiptap';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, Bold, Italic, Strikethrough, List, ListOrdered, Heading2, Quote, Code } from 'lucide-react';
+import { useEditor, EditorContent, type Editor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { Color } from '@tiptap/extension-color';
+import { TextStyle } from '@tiptap/extension-text-style';
+import { Toggle } from '@/components/ui/toggle';
+
+// Toolbar Component, now co-located for better integration
+const EditorToolbar = ({ editor }: { editor: Editor | null }) => {
+  if (!editor) {
+    return null;
+  }
+
+  return (
+    <div className="border-b border-border p-2 flex flex-wrap items-center gap-1 sticky top-0 bg-card z-10 rounded-t-lg">
+      <Toggle size="sm" pressed={editor.isActive('heading', { level: 2 })} onPressedChange={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
+        <Heading2 className="h-4 w-4" />
+      </Toggle>
+      <Toggle size="sm" pressed={editor.isActive('bold')} onPressedChange={() => editor.chain().focus().toggleBold().run()}>
+        <Bold className="h-4 w-4" />
+      </Toggle>
+      <Toggle size="sm" pressed={editor.isActive('italic')} onPressedChange={() => editor.chain().focus().toggleItalic().run()}>
+        <Italic className="h-4 w-4" />
+      </Toggle>
+      <Toggle size="sm" pressed={editor.isActive('strike')} onPressedChange={() => editor.chain().focus().toggleStrike().run()}>
+        <Strikethrough className="h-4 w-4" />
+      </Toggle>
+      <Toggle size="sm" pressed={editor.isActive('bulletList')} onPressedChange={() => editor.chain().focus().toggleBulletList().run()}>
+        <List className="h-4 w-4" />
+      </Toggle>
+      <Toggle size="sm" pressed={editor.isActive('orderedList')} onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}>
+        <ListOrdered className="h-4 w-4" />
+      </Toggle>
+      <Toggle size="sm" pressed={editor.isActive('blockquote')} onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}>
+        <Quote className="h-4 w-4" />
+      </Toggle>
+      <Toggle size="sm" pressed={editor.isActive('code')} onPressedChange={() => editor.chain().focus().toggleCode().run()}>
+        <Code className="h-4 w-4" />
+      </Toggle>
+      <input
+        type="color"
+        className="w-6 h-6 p-0 border-none bg-transparent cursor-pointer"
+        onInput={(event) => editor.chain().focus().setColor((event.target as HTMLInputElement).value).run()}
+        value={editor.getAttributes('textStyle').color || '#000000'}
+      />
+    </div>
+  );
+};
 
 interface Document {
   id: string;
@@ -24,51 +70,52 @@ const DocumentEditor = () => {
   const { toast } = useToast();
 
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState<any>('');
 
   const isNewDocument = id === 'new';
 
-  // Fetch document data
   const { data: documentData, isLoading } = useQuery<Document | null>({
     queryKey: ['document', id],
     queryFn: async () => {
       if (isNewDocument || !id) return null;
-      const { data, error } = await supabase
-        .from('documents')
-        .select('*')
-        .eq('id', id)
-        .single();
+      const { data, error } = await supabase.from('documents').select('*').eq('id', id).single();
       if (error) throw new Error(error.message);
       return data;
     },
     enabled: !isNewDocument && !!id,
   });
 
+  const editor = useEditor({
+    extensions: [StarterKit.configure({}), TextStyle, Color],
+    editorProps: {
+      attributes: {
+        class: 'prose dark:prose-invert max-w-full focus:outline-none',
+      },
+    },
+    onUpdate({ editor }) {
+      setContent(editor.getJSON());
+    },
+  });
+
   useEffect(() => {
     if (documentData) {
       setTitle(documentData.title || '');
-      setContent(documentData.content ? JSON.stringify(documentData.content) : '');
+      if (editor && documentData.content) {
+        editor.commands.setContent(documentData.content);
+      }
     }
-  }, [documentData]);
+  }, [documentData, editor]);
 
-  // Mutation for creating/updating document
   const documentMutation = useMutation({
     mutationFn: async ({ title, content }: { title: string; content: any }) => {
       if (!user) throw new Error('User not authenticated');
-
-      const docPayload = {
-        user_id: user.id,
-        title,
-        content: content ? JSON.parse(content) : null,
-      };
+      const docPayload = { user_id: user.id, title, content };
 
       if (isNewDocument) {
-        // Create new document
         const { data, error } = await supabase.from('documents').insert(docPayload).select().single();
         if (error) throw new Error(error.message);
         return data;
       } else {
-        // Update existing document
         const { data, error } = await supabase.from('documents').update(docPayload).eq('id', id!).select().single();
         if (error) throw new Error(error.message);
         return data;
@@ -76,63 +123,64 @@ const DocumentEditor = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['documents', user?.id] });
-      queryClient.invalidateQueries({ queryKey: ['document', id] });
-      toast({
-        title: '¡Documento guardado!',
-        description: 'Tus cambios se han guardado correctamente.',
-      });
+      queryClient.setQueryData(['document', data.id], data);
+      toast({ title: '¡Documento guardado!' });
       if (isNewDocument && data) {
         navigate(`/dashboard/documents/${data.id}`, { replace: true });
       }
     },
     onError: (error) => {
-      toast({
-        title: 'Error al guardar',
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast({ title: 'Error al guardar', description: error.message, variant: 'destructive' });
     },
   });
 
   const handleSave = () => {
-    documentMutation.mutate({ title, content });
+    documentMutation.mutate({ title, content: editor?.getJSON() });
   };
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <Skeleton className="h-10 w-24" />
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-64 w-full" />
-        <Skeleton className="h-10 w-32" />
+      <div className="p-8">
+        <Skeleton className="h-12 w-1/2 mb-8" />
+        <Skeleton className="h-96 w-full" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <Button variant="ghost" onClick={() => navigate('/dashboard/documents')} className="mb-4">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Volver a Documentos
-        </Button>
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-foreground">
-            {isNewDocument ? 'Nuevo Documento' : 'Editar Documento'}
-          </h1>
-          <Button onClick={handleSave} disabled={documentMutation.isPending}>
-            <Save className="h-4 w-4 mr-2" />
-            {documentMutation.isPending ? 'Guardando...' : 'Guardar'}
+    <div className="flex flex-col h-screen bg-muted">
+      <header className="bg-background border-b border-border p-2 flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard/documents')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver a Documentos
           </Button>
         </div>
-      </div>
-      <Input
-        placeholder="Título del documento"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="text-2xl font-bold h-12"
-      />
-      <Tiptap content={content ? JSON.parse(content) : ''} onChange={setContent} />
+        <div className="flex items-center gap-4">
+          <p className="text-sm text-muted-foreground">
+            {documentMutation.isPending ? 'Guardando...' : 'Guardado'}
+          </p>
+          <Button size="sm" onClick={handleSave} disabled={documentMutation.isPending}>
+            <Save className="h-4 w-4 mr-2" />
+            Guardar Cambios
+          </Button>
+        </div>
+      </header>
+
+      <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <div className="max-w-4xl mx-auto bg-card rounded-lg shadow-lg border border-border">
+          <EditorToolbar editor={editor} />
+          <div className="p-8 md:p-12">
+            <Input
+              placeholder="Título del Documento"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="border-none text-3xl md:text-5xl font-bold h-auto p-0 focus-visible:ring-0 mb-8 w-full bg-transparent"
+            />
+            <EditorContent editor={editor} />
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

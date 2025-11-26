@@ -30,6 +30,8 @@ const App = () => (
                 <Route path="/" element={<Index />} />
               </Route>
               <Route path="/login" element={<Login />} />
+              
+              {/* Dashboard routes with sidebar */}
               <Route
                 path="/dashboard"
                 element={
@@ -40,8 +42,18 @@ const App = () => (
               >
                 <Route index element={<DashboardHome />} />
                 <Route path="documents" element={<Documents />} />
-                <Route path="documents/:id" element={<DocumentEditor />} />
               </Route>
+
+              {/* Document editor route (full-screen) */}
+              <Route
+                path="/dashboard/documents/:id"
+                element={
+                  <ProtectedRoute>
+                    <DocumentEditor />
+                  </ProtectedRoute>
+                }
+              />
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
