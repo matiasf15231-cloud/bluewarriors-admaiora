@@ -120,7 +120,7 @@ const Login = () => {
       <div className="w-full max-w-md">
         <Card className="border-none shadow-lg pb-0">
           <CardHeader className="flex flex-col items-center space-y-1.5 pb-4 pt-6 text-center">
-            <img src={logo} alt="BlueWarriors Logo" className="w-24" />
+            <img src={logo} alt="BlueWarriors Logo" className="w-48" />
             <div className="space-y-0.5 flex flex-col items-center">
               <h2 className="text-2xl font-semibold text-foreground">
                 {isSignUp ? "Crea una cuenta" : "Inicia Sesión"}

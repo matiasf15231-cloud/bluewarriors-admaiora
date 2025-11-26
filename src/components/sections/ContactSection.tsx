@@ -109,7 +109,7 @@ const ContactSection = () => {
         <div className="mt-16 pt-8 border-t border-border text-center">
           <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
             <div>
-              <img src={logo} alt="BlueWarriors Logo" className="h-12 mx-auto sm:mx-0" />
+              <img src={logo} alt="BlueWarriors Logo" className="h-10 mx-auto sm:mx-0" />
               <p className="text-sm text-muted-foreground mt-2">
                 FIRST LEGO League - República Dominicana
               </p>
