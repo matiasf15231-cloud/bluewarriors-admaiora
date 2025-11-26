@@ -56,7 +56,7 @@ const AchievementsSection = () => {
     label: "Miembros del Equipo",
     description: "Talentos diversos"
   }];
-  const skills = ["Diseño de Robots", "Programación", "Investigación", "Presentación", "Trabajo en Equipo", "Innovación", "Resolución de Problemas", "Gracious Professionalism"];
+  const skills = ["Diseño de Robots", "Programación", "Investigación", "Presentación", "Trabajo en Equipo", "Innovación", "Resolución de Problemas"];
   return <section id="logros" className="py-20 bg-gradient-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
