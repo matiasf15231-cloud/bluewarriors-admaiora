@@ -29,8 +29,7 @@ const Clock = ({ variant = 'large' }: ClockProps) => {
           {format(time, "EEEE, d 'de' MMMM", { locale: es })}
         </p>
       </div>
-    </div>
-  );
+    );
   }
 
   return (
