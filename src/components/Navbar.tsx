@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Trophy, Users, Bot, Medal, Camera, LogIn, LayoutDashboard, LogOut, UserPlus } from 'lucide-react';
+import { Menu, X, Trophy, Users, Bot, Medal, Camera, LogIn, LayoutDashboard, LogOut } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -81,16 +81,10 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button asChild variant="outline" size="sm" className="hover:bg-primary/10 hover:scale-105 transition-all duration-300">
+                <Button asChild size="sm" className="hover:scale-105 transition-all duration-300">
                   <Link to="/login">
                     <LogIn className="h-4 w-4 mr-2" />
                     Iniciar Sesión
-                  </Link>
-                </Button>
-                <Button asChild size="sm" className="group bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-all duration-300">
-                  <Link to="/login">
-                    <UserPlus className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:translate-x-1" />
-                    Registrarse
                   </Link>
                 </Button>
               </div>
@@ -147,16 +141,10 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="space-y-1">
-                <Button asChild variant="outline" className="w-full justify-start hover:bg-primary/10">
+                <Button asChild className="w-full">
                   <Link to="/login">
                     <LogIn className="h-5 w-5 mr-3" />
                     Iniciar Sesión
-                  </Link>
-                </Button>
-                <Button asChild className="w-full">
-                  <Link to="/login">
-                    <UserPlus className="h-5 w-5 mr-3" />
-                    Registrarse
                   </Link>
                 </Button>
               </div>
