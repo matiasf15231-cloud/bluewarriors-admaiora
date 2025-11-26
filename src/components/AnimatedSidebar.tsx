@@ -229,14 +229,19 @@ export const AnimatedSidebarContent = () => {
     return (
         <div className={cn("flex flex-col justify-between h-full", open ? "" : "items-center")}>
             <div>
-                <div className="px-3 py-2">
+                <div className="px-3 py-2 h-12 flex items-center">
                     <motion.div
+                        initial={false}
                         animate={{
-                            display: open ? "block" : "none",
+                            width: open ? "auto" : 0,
                             opacity: open ? 1 : 0,
                         }}
+                        transition={{
+                            duration: 0.2,
+                        }}
+                        className="overflow-hidden"
                     >
-                        <span className="text-xl font-bold bg-gradient-hero bg-clip-text text-transparent">
+                        <span className="text-xl font-bold bg-gradient-hero bg-clip-text text-transparent whitespace-nowrap">
                             BlueWarriors DB
                         </span>
                     </motion.div>
