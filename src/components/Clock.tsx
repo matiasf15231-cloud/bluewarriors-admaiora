@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-const Clock = () => {
+interface ClockProps {
+  variant?: 'large' | 'small';
+}
+
+const Clock = ({ variant = 'large' }: ClockProps) => {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -14,6 +18,19 @@ const Clock = () => {
       clearInterval(timerId);
     };
   }, []);
+
+  if (variant === 'small') {
+    return (
+      <div className="text-right">
+        <p className="text-xl font-semibold text-foreground tracking-tight">
+          {format(time, 'HH:mm:ss')}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {format(time, "EEEE, d 'de' MMMM", { locale: es })}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="text-center">
