@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { ArrowDown, Bot, Trophy } from 'lucide-react';
 import heroImage from '@/assets/bluewarriors.png';
+import logo from '@/assets/bluewarriors-logo.png';
+
 const HeroSection = () => {
   const scrollToTeam = () => {
     const element = document.querySelector('#equipo');
@@ -22,9 +24,7 @@ const HeroSection = () => {
         <div className="space-y-8">
           {/* Main Title */}
           <div className="space-y-4">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white">
-              Blue<span className="text-blue-200">Warriors</span>
-            </h1>
+            <img src={logo} alt="BlueWarriors Logo" className="w-full max-w-2xl mx-auto" />
             <div className="flex items-center justify-center space-x-2 text-blue-100">
               <Bot className="h-8 w-8" />
               <span className="text-xl sm:text-2xl">FIRST LEGO League</span>
