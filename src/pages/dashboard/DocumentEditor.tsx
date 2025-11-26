@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, Save, Bold, Italic, Strikethrough, List, ListOrdered, Heading2, Quote, Code } from 'lucide-react';
+import { ArrowLeft, Save, Bold, Italic, Strikethrough, List, ListOrdered, Heading1, Heading2, Heading3, Quote, Code, Pilcrow } from 'lucide-react';
 import { useEditor, EditorContent, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Color } from '@tiptap/extension-color';
@@ -22,9 +22,23 @@ const EditorToolbar = ({ editor }: { editor: Editor | null }) => {
 
   return (
     <div className="border-b border-border p-2 flex flex-wrap items-center gap-1 sticky top-0 bg-card z-10 rounded-t-lg">
+      {/* Text Size Toggles */}
+      <Toggle size="sm" pressed={editor.isActive('paragraph')} onPressedChange={() => editor.chain().focus().setParagraph().run()}>
+        <Pilcrow className="h-4 w-4" />
+      </Toggle>
+      <Toggle size="sm" pressed={editor.isActive('heading', { level: 1 })} onPressedChange={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
+        <Heading1 className="h-4 w-4" />
+      </Toggle>
       <Toggle size="sm" pressed={editor.isActive('heading', { level: 2 })} onPressedChange={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
         <Heading2 className="h-4 w-4" />
       </Toggle>
+      <Toggle size="sm" pressed={editor.isActive('heading', { level: 3 })} onPressedChange={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
+        <Heading3 className="h-4 w-4" />
+      </Toggle>
+      
+      <div className="w-[1px] h-6 bg-border mx-1"></div>
+
+      {/* Style Toggles */}
       <Toggle size="sm" pressed={editor.isActive('bold')} onPressedChange={() => editor.chain().focus().toggleBold().run()}>
         <Bold className="h-4 w-4" />
       </Toggle>
@@ -34,18 +48,30 @@ const EditorToolbar = ({ editor }: { editor: Editor | null }) => {
       <Toggle size="sm" pressed={editor.isActive('strike')} onPressedChange={() => editor.chain().focus().toggleStrike().run()}>
         <Strikethrough className="h-4 w-4" />
       </Toggle>
+      
+      <div className="w-[1px] h-6 bg-border mx-1"></div>
+
+      {/* List Toggles */}
       <Toggle size="sm" pressed={editor.isActive('bulletList')} onPressedChange={() => editor.chain().focus().toggleBulletList().run()}>
         <List className="h-4 w-4" />
       </Toggle>
       <Toggle size="sm" pressed={editor.isActive('orderedList')} onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}>
         <ListOrdered className="h-4 w-4" />
       </Toggle>
+      
+      <div className="w-[1px] h-6 bg-border mx-1"></div>
+
+      {/* Block Toggles */}
       <Toggle size="sm" pressed={editor.isActive('blockquote')} onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}>
         <Quote className="h-4 w-4" />
       </Toggle>
       <Toggle size="sm" pressed={editor.isActive('code')} onPressedChange={() => editor.chain().focus().toggleCode().run()}>
         <Code className="h-4 w-4" />
       </Toggle>
+      
+      <div className="w-[1px] h-6 bg-border mx-1"></div>
+
+      {/* Color Picker */}
       <input
         type="color"
         className="w-6 h-6 p-0 border-none bg-transparent cursor-pointer"
@@ -70,7 +96,6 @@ const DocumentEditor = () => {
   const { toast } = useToast();
 
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState<any>('');
 
   const isNewDocument = id === 'new';
 
@@ -86,25 +111,36 @@ const DocumentEditor = () => {
   });
 
   const editor = useEditor({
-    extensions: [StarterKit.configure({}), TextStyle, Color],
+    extensions: [
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3],
+        },
+      }), 
+      TextStyle, 
+      Color
+    ],
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert max-w-full focus:outline-none',
+        class: 'prose dark:prose-invert max-w-full focus:outline-none min-h-[400px]',
       },
-    },
-    onUpdate({ editor }) {
-      setContent(editor.getJSON());
     },
   });
 
   useEffect(() => {
     if (documentData) {
       setTitle(documentData.title || '');
-      if (editor && documentData.content) {
-        editor.commands.setContent(documentData.content);
+      if (editor && documentData.content && !editor.isDestroyed) {
+        const currentContent = JSON.stringify(editor.getJSON());
+        const newContent = JSON.stringify(documentData.content);
+        if (currentContent !== newContent) {
+          editor.commands.setContent(documentData.content);
+        }
       }
+    } else if (isNewDocument && editor && !editor.isDestroyed) {
+      editor.commands.clearContent();
     }
-  }, [documentData, editor]);
+  }, [documentData, editor, isNewDocument]);
 
   const documentMutation = useMutation({
     mutationFn: async ({ title, content }: { title: string; content: any }) => {
@@ -135,14 +171,23 @@ const DocumentEditor = () => {
   });
 
   const handleSave = () => {
-    documentMutation.mutate({ title, content: editor?.getJSON() });
+    if (!editor) return;
+    documentMutation.mutate({ title, content: editor.getJSON() });
   };
 
   if (isLoading) {
     return (
-      <div className="p-8">
-        <Skeleton className="h-12 w-1/2 mb-8" />
-        <Skeleton className="h-96 w-full" />
+      <div className="flex flex-col h-screen bg-muted">
+        <header className="bg-background border-b border-border p-2 flex items-center justify-between flex-shrink-0">
+          <Skeleton className="h-8 w-40" />
+          <Skeleton className="h-8 w-32" />
+        </header>
+        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+          <div className="max-w-4xl mx-auto">
+            <Skeleton className="h-12 w-3/4 mb-8" />
+            <Skeleton className="h-96 w-full" />
+          </div>
+        </main>
       </div>
     );
   }
