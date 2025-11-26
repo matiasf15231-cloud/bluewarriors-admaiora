@@ -5,6 +5,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Link, useNavigate } from 'react-router-dom';
+import logo from '@/assets/bluewarriors-logo.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,8 +49,8 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/" className="text-xl md:text-2xl font-bold bg-gradient-hero bg-clip-text text-transparent">
-              BlueWarriors
+            <Link to="/">
+              <img src={logo} alt="BlueWarriors Logo" className="h-12" />
             </Link>
           </div>
 

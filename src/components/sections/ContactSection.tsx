@@ -6,6 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Mail, MapPin, Phone, Instagram, Youtube, Facebook, MessageSquare, Send, ExternalLink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import logo from '@/assets/bluewarriors-logo.png';
+
 const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -107,10 +109,8 @@ const ContactSection = () => {
         <div className="mt-16 pt-8 border-t border-border text-center">
           <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
             <div>
-              <h4 className="text-xl font-bold bg-gradient-hero bg-clip-text text-transparent">
-                BlueWarriors
-              </h4>
-              <p className="text-sm text-muted-foreground">
+              <img src={logo} alt="BlueWarriors Logo" className="h-12 mx-auto sm:mx-0" />
+              <p className="text-sm text-muted-foreground mt-2">
                 FIRST LEGO League - República Dominicana
               </p>
             </div>

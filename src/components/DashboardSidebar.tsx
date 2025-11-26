@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import logo from '@/assets/bluewarriors-logo.png';
 
 interface Link {
   label: string;
@@ -112,8 +113,8 @@ export const MobileSidebar = ({
         {...props}
       >
         <div className="flex-1">
-          <Link to="/" className="text-xl font-bold bg-gradient-hero bg-clip-text text-transparent">
-            BlueWarriors DB
+          <Link to="/">
+            <img src={logo} alt="BlueWarriors Logo" className="h-10" />
           </Link>
         </div>
         <div className="flex justify-end z-20">
@@ -220,9 +221,7 @@ export const SidebarContent = () => {
                             open ? "w-auto" : "w-0"
                         )}
                     >
-                        <span className="text-xl font-bold bg-gradient-hero bg-clip-text text-transparent whitespace-nowrap">
-                            BlueWarriors DB
-                        </span>
+                        <img src={logo} alt="BlueWarriors Logo" className="h-10" />
                     </div>
                 </div>
                 <div className="flex flex-col mt-4 w-full space-y-2">
