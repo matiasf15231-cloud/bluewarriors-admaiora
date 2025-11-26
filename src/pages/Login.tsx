@@ -1,6 +1,6 @@
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { es } from '@supabase/auth-ui-shared/dist/esm/locales/es';
+import { es } from '@supabase/auth-ui-shared/dist/esm/locales/es.js';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate, useLocation } from 'react-router-dom';
