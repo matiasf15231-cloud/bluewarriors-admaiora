@@ -170,7 +170,7 @@ export const SidebarLink = ({
 }) => {
   const { open, animate, setOpen } = useSidebar();
   const location = useLocation();
-  const isActive = location.pathname === link.href;
+  const isActive = location.pathname.startsWith(link.href);
 
   return (
     <NavLink
@@ -218,8 +218,8 @@ export const AnimatedSidebarContent = () => {
             icon: <Home className="h-5 w-5" />,
         },
         {
-            label: "Notas",
-            href: "/dashboard/notes",
+            label: "Documentos",
+            href: "/dashboard/documents",
             icon: <FileText className="h-5 w-5" />,
         },
     ];

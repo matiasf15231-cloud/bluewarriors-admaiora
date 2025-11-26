@@ -12,7 +12,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import HomeLayout from "./components/HomeLayout";
 import DashboardLayout from "./components/DashboardLayout";
 import DashboardHome from "./pages/dashboard/Index";
-import Notes from "./pages/dashboard/Notes";
+import Documents from "./pages/dashboard/Documents";
+import DocumentEditor from "./pages/dashboard/DocumentEditor";
 
 const queryClient = new QueryClient();
 
@@ -38,7 +39,8 @@ const App = () => (
                 }
               >
                 <Route index element={<DashboardHome />} />
-                <Route path="notes" element={<Notes />} />
+                <Route path="documents" element={<Documents />} />
+                <Route path="documents/:id" element={<DocumentEditor />} />
               </Route>
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
