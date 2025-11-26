@@ -2,10 +2,11 @@ import { cn } from "@/lib/utils";
 import { NavLink, useLocation, useNavigate, Link } from "react-router-dom";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, Home, FileText, LogOut } from "lucide-react";
+import { Menu, X, Home, FileText, LogOut, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 interface Link {
   label: string;
@@ -219,40 +220,55 @@ export const AnimatedSidebarContent = () => {
     ];
 
     return (
-        <>
-            <div className={cn("flex flex-col justify-between h-full", open ? "p-0" : "p-0 items-center")}>
-                <div className="flex flex-col flex-1 mt-8">
-                    {links.map((link, idx) => (
-                        <SidebarLink key={idx} link={link} />
-                    ))}
-                </div>
-                <div className="flex flex-col items-center w-full">
-                    {user && (
+        <div className={cn("flex flex-col justify-between h-full", open ? "" : "items-center")}>
+            <div className="flex flex-col flex-1 mt-8 w-full space-y-2">
+                {links.map((link, idx) => (
+                    <SidebarLink key={idx} link={link} />
+                ))}
+            </div>
+
+            <div className="w-full">
+                {user && (
+                    <div className={cn(
+                        "flex items-center w-full p-2 rounded-lg transition-colors duration-200",
+                        open ? "gap-3" : "justify-center"
+                    )}>
+                        <Avatar className="h-8 w-8 flex-shrink-0">
+                            <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email ?? 'User Avatar'} />
+                            <AvatarFallback className="bg-muted">
+                                <User className="h-4 w-4 text-muted-foreground" />
+                            </AvatarFallback>
+                        </Avatar>
                         <motion.div
                             animate={{
-                                display: open ? "block" : "none",
+                                width: open ? "100%" : 0,
                                 opacity: open ? 1 : 0,
                             }}
-                            className="text-xs text-muted-foreground mb-2 truncate w-full px-3"
-                            title={user.email ?? ''}
+                            className="overflow-hidden flex-1"
                         >
-                            {user.email}
+                            <div className="flex items-center justify-between">
+                                <p className="text-sm font-medium text-foreground truncate" title={user.email ?? ''}>
+                                    {user.email}
+                                </p>
+                                <Button onClick={handleLogout} variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0 text-muted-foreground hover:text-destructive">
+                                    <LogOut className="h-4 w-4" />
+                                </Button>
+                            </div>
                         </motion.div>
-                    )}
-                    <Button onClick={handleLogout} variant="outline" size="sm" className="w-full">
+                    </div>
+                )}
+                <motion.div
+                    animate={{
+                        display: open ? "none" : "flex",
+                        opacity: open ? 0 : 1,
+                    }}
+                    className="w-full justify-center mt-2"
+                >
+                    <Button onClick={handleLogout} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive">
                         <LogOut className="h-4 w-4" />
-                        <motion.span
-                            animate={{
-                                display: open ? "inline-block" : "none",
-                                opacity: open ? 1 : 0,
-                            }}
-                            className="ml-2"
-                        >
-                            Cerrar Sesión
-                        </motion.span>
                     </Button>
-                </div>
+                </motion.div>
             </div>
-        </>
+        </div>
     );
 };
