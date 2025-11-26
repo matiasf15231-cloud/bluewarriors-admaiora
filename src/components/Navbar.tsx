@@ -69,7 +69,7 @@ const Navbar = () => {
             </div>
             {session ? (
               <div className="flex items-center space-x-2">
-                <Button asChild variant="ghost" size="sm" className="hover:bg-secondary hover:scale-105 transition-all duration-300">
+                <Button asChild variant="ghost" size="sm" className="hover:bg-primary/10 hover:scale-105 transition-all duration-300">
                   <Link to="/dashboard">
                     <LayoutDashboard className="h-4 w-4 mr-2" />
                     Dashboard
@@ -81,7 +81,7 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button asChild variant="outline" size="sm" className="hover:bg-secondary hover:scale-105 transition-all duration-300">
+                <Button asChild variant="outline" size="sm" className="hover:bg-primary/10 hover:scale-105 transition-all duration-300">
                   <Link to="/login">
                     <LogIn className="h-4 w-4 mr-2" />
                     Iniciar Sesión
@@ -134,7 +134,7 @@ const Navbar = () => {
             <div className="border-t border-border my-2"></div>
             {session ? (
               <div className="space-y-1">
-                <Button asChild variant="ghost" className="w-full justify-start">
+                <Button asChild variant="ghost" className="w-full justify-start hover:bg-primary/10">
                   <Link to="/dashboard">
                     <LayoutDashboard className="h-5 w-5 mr-3" />
                     Dashboard
@@ -147,7 +147,7 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="space-y-1">
-                <Button asChild variant="outline" className="w-full justify-start">
+                <Button asChild variant="outline" className="w-full justify-start hover:bg-primary/10">
                   <Link to="/login">
                     <LogIn className="h-5 w-5 mr-3" />
                     Iniciar Sesión
