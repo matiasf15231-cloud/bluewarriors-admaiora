@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { NavLink, useLocation, useNavigate, Link } from "react-router-dom";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, Home, FileText, LogOut, User } from "lucide-react";
+import { Menu, X, Home, FileText, LogOut, User, Undo2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -207,6 +207,11 @@ export const AnimatedSidebarContent = () => {
     };
 
     const links = [
+        {
+            label: "Volver al Inicio",
+            href: "/",
+            icon: <Undo2 className="h-5 w-5" />,
+        },
         {
             label: "Home",
             href: "/dashboard",
