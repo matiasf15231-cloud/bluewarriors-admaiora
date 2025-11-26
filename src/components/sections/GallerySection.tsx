@@ -9,6 +9,11 @@ import GalleryModal from '@/components/GalleryModal';
 import image1 from '@/assets/IMG_0538.png';
 import image2 from '@/assets/IMG_0539.png';
 
+// Import user-provided videos
+import video1 from '@/assets/1000030711.mp4';
+import video2 from '@/assets/1000030710.mp4';
+import video3 from '@/assets/1000030709.mp4';
+
 interface MediaItem {
   src: string;
   title: string;
@@ -36,6 +41,27 @@ const GallerySection = () => {
       description: 'Vista del robot y la mesa de competencia durante una sesión de práctica.',
       category: 'mesa',
       type: 'photo',
+    },
+    {
+      src: video1,
+      title: 'Sesión con Experto en Robótica',
+      description: 'Aprendiendo de profesionales de la industria para mejorar nuestro enfoque.',
+      category: 'profesionales',
+      type: 'video',
+    },
+    {
+      src: video2,
+      title: 'Charla sobre Innovación',
+      description: 'Una sesión inspiradora con un innovador local sobre el proceso creativo.',
+      category: 'profesionales',
+      type: 'video',
+    },
+    {
+      src: video3,
+      title: 'Taller de Programación Avanzada',
+      description: 'Profundizando en técnicas de programación con un desarrollador senior.',
+      category: 'profesionales',
+      type: 'video',
     },
   ];
   
@@ -69,7 +95,7 @@ const GallerySection = () => {
     icon: Video
   }];
   
-  const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab);
+  const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab || (activeTab === 'videos' && item.type === 'video'));
 
   const handleImageClick = (index: number) => {
     setSelectedImageIndex(index);
@@ -135,6 +161,7 @@ const GallerySection = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredItems.map((item, index) => {
+                const itemIndexInFilteredList = filteredItems.findIndex(fi => fi.src === item.src);
                 return (
                   <Card 
                     key={index} 
@@ -143,7 +170,7 @@ const GallerySection = () => {
                       animationDelay: `${index * 150}ms`,
                       animationFillMode: 'both'
                     }}
-                    onClick={() => handleImageClick(index)}
+                    onClick={() => handleImageClick(itemIndexInFilteredList)}
                   >
                     <CardContent className="p-0">
                       <div className="aspect-video relative overflow-hidden">
