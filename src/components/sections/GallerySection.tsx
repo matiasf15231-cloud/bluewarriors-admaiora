@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -166,6 +166,23 @@ const GallerySection = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredItems.map((item, index) => {
+                const videoRef = useRef<HTMLVideoElement>(null);
+
+                const handleMouseEnter = () => {
+                  if (videoRef.current) {
+                    videoRef.current.play().catch(error => {
+                      console.error("Video play failed:", error);
+                    });
+                  }
+                };
+
+                const handleMouseLeave = () => {
+                  if (videoRef.current) {
+                    videoRef.current.pause();
+                    videoRef.current.currentTime = 0;
+                  }
+                };
+
                 return (
                   <Card 
                     key={index} 
@@ -175,17 +192,20 @@ const GallerySection = () => {
                       animationFillMode: 'both'
                     }}
                     onClick={() => handleImageClick(index)}
+                    onMouseEnter={item.type === 'video' ? handleMouseEnter : undefined}
+                    onMouseLeave={item.type === 'video' ? handleMouseLeave : undefined}
                   >
                     <CardContent className="p-0">
                       <div className="aspect-video relative overflow-hidden">
-                        <img 
-                          src={item.type === 'photo' ? item.src : ''} // Placeholder for video thumbnail if needed
-                          alt={item.title} 
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          style={{ display: item.type === 'photo' ? 'block' : 'none' }}
-                        />
-                        {item.type === 'video' && (
+                        {item.type === 'photo' ? (
+                          <img 
+                            src={item.src}
+                            alt={item.title} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                        ) : (
                           <video
+                            ref={videoRef}
                             src={item.src}
                             muted
                             loop
@@ -195,7 +215,9 @@ const GallerySection = () => {
                         )}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/20 transition-all duration-300">
                           {item.type === 'video' && (
-                            <Play className="h-12 w-12 text-white/80 transition-all duration-300 group-hover:scale-110 group-hover:text-white" />
+                            <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                              <Play className="h-8 w-8 text-white/90" />
+                            </div>
                           )}
                         </div>
                       </div>

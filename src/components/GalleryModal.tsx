@@ -66,6 +66,7 @@ const GalleryModal = ({ isOpen, onClose, media, startIndex = 0 }: GalleryModalPr
               src={currentMedia.src}
               controls
               autoPlay
+              muted
               className="gallery-video max-w-full max-h-full object-contain rounded-lg shadow-lg"
               key={currentIndex}
             >
