@@ -28,6 +28,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Skeleton } from "@/components/ui/skeleton";
+import googleLogo from '@/assets/google.png';
 
 const Logo = (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => (
   <svg
@@ -48,13 +49,6 @@ const Logo = (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => (
       <path d="m17.6361 32.1507c-1.3796-.4076-2.6067-1.1707-3.5751-2.1833l-7.9325 7.9325 2.87919 2.8792z" />
       <path d="m13.9956 29.8973c-.9518-1.019-1.6451-2.2826-1.9751-3.6862l-10.95836 2.9363 1.05385 3.933z" />
     </g>
-  </svg>
-);
-
-const GoogleIcon = (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => (
-  <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <title>Google</title>
-    <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.85 3.18-1.73 4.1-1.02 1.02-2.62 1.98-4.66 1.98-3.57 0-6.47-2.92-6.47-6.5s2.9-6.5 6.47-6.5c1.96 0 3.37.79 4.15 1.54l2.48-2.38C18.09 2.96 15.96 2 12.48 2 7.43 2 3.23 6.03 3.23 11s4.2 9 9.25 9c2.82 0 5.12-1.04 6.9-2.72 1.84-1.68 2.52-4.32 2.52-6.21 0-.87-.1-1.64-.24-2.38h-9.48z" />
   </svg>
 );
 
@@ -257,7 +251,7 @@ const Login = () => {
               </div>
             </div>
             <Button variant="outline" className="w-full" onClick={handleGoogleSignIn}>
-              <GoogleIcon className="mr-2 h-4 w-4" />
+              <img src={googleLogo} alt="Google" className="mr-2 h-4 w-4" />
               Google
             </Button>
           </CardContent>
