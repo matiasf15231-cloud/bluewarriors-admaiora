@@ -8,11 +8,11 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Save, Bold, Italic, Strikethrough, List, ListOrdered, Heading1, Heading2, Heading3, Quote, Code, Pilcrow, ImageIcon, Loader2 } from 'lucide-react';
-import { useEditor, EditorContent, type Editor } from '@tiptap/react';
+import { useEditor, EditorContent, type Editor, BubbleMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Color } from '@tiptap/extension-color';
 import { TextStyle } from '@tiptap/extension-text-style';
-import { Image } from '@tiptap/extension-image';
+import Image from '@tiptap/extension-image';
 import { Toggle } from '@/components/ui/toggle';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -132,6 +132,23 @@ interface Document {
   content: any;
 }
 
+const ResizableImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      width: {
+        default: '100%',
+        renderHTML: (attributes) => ({
+          style: `width: ${attributes.width}`,
+        }),
+        parseHTML: (element) => element.style.width || element.getAttribute('width'),
+      },
+    };
+  },
+}).configure({
+  inline: false,
+});
+
 const DocumentEditor = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -163,9 +180,7 @@ const DocumentEditor = () => {
       }), 
       TextStyle, 
       Color,
-      Image.configure({
-        inline: false,
-      }),
+      ResizableImage,
     ],
     editorProps: {
       attributes: {
@@ -305,6 +320,36 @@ const DocumentEditor = () => {
               onChange={(e) => setTitle(e.target.value)}
               className="border-none text-3xl md:text-5xl font-bold h-auto p-0 focus-visible:ring-0 mb-8 w-full bg-transparent"
             />
+            {editor && (
+              <BubbleMenu
+                editor={editor}
+                tippyOptions={{ duration: 100 }}
+                shouldShow={({ editor }) => editor.isActive('image')}
+                className="bg-card border border-border rounded-lg shadow-xl p-1 flex gap-1"
+              >
+                <Button
+                  size="sm"
+                  variant={editor.isActive('image', { width: '25%' }) ? 'secondary' : 'ghost'}
+                  onClick={() => editor.chain().focus().updateAttributes('image', { width: '25%' }).run()}
+                >
+                  Pequeño
+                </Button>
+                <Button
+                  size="sm"
+                  variant={editor.isActive('image', { width: '50%' }) ? 'secondary' : 'ghost'}
+                  onClick={() => editor.chain().focus().updateAttributes('image', { width: '50%' }).run()}
+                >
+                  Mediano
+                </Button>
+                <Button
+                  size="sm"
+                  variant={editor.isActive('image', { width: '100%' }) ? 'secondary' : 'ghost'}
+                  onClick={() => editor.chain().focus().updateAttributes('image', { width: '100%' }).run()}
+                >
+                  Grande
+                </Button>
+              </BubbleMenu>
+            )}
             <EditorContent editor={editor} />
           </div>
         </div>
