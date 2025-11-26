@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,18 +7,41 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, Save, Bold, Italic, Strikethrough, List, ListOrdered, Heading1, Heading2, Heading3, Quote, Code, Pilcrow } from 'lucide-react';
+import { ArrowLeft, Save, Bold, Italic, Strikethrough, List, ListOrdered, Heading1, Heading2, Heading3, Quote, Code, Pilcrow, ImageIcon, Loader2 } from 'lucide-react';
 import { useEditor, EditorContent, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Color } from '@tiptap/extension-color';
 import { TextStyle } from '@tiptap/extension-text-style';
+import { Image } from '@tiptap/extension-image';
 import { Toggle } from '@/components/ui/toggle';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 // Toolbar Component, now co-located for better integration
-const EditorToolbar = ({ editor }: { editor: Editor | null }) => {
+const EditorToolbar = ({ editor, onImageUpload, isNewDocument }: { editor: Editor | null; onImageUpload: (file: File) => Promise<void>; isNewDocument: boolean; }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
   if (!editor) {
     return null;
   }
+
+  const handleFileSelect = () => {
+    if (isNewDocument) return;
+    fileInputRef.current?.click();
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    await onImageUpload(file);
+    setIsUploading(false);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   return (
     <div className="border-b border-border p-2 flex flex-wrap items-center gap-1 sticky top-0 bg-card z-10 rounded-t-lg">
@@ -78,6 +101,27 @@ const EditorToolbar = ({ editor }: { editor: Editor | null }) => {
         onInput={(event) => editor.chain().focus().setColor((event.target as HTMLInputElement).value).run()}
         value={editor.getAttributes('textStyle').color || '#000000'}
       />
+
+      {/* Image Upload */}
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span tabIndex={0}>
+              <Toggle size="sm" onPressedChange={handleFileSelect} disabled={isNewDocument || isUploading}>
+                {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4" />}
+              </Toggle>
+            </span>
+          </TooltipTrigger>
+          {isNewDocument && <TooltipContent><p>Guarda el documento para añadir imágenes.</p></TooltipContent>}
+        </Tooltip>
+      </TooltipProvider>
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileUpload}
+        className="hidden"
+        accept="image/*"
+      />
     </div>
   );
 };
@@ -118,7 +162,10 @@ const DocumentEditor = () => {
         },
       }), 
       TextStyle, 
-      Color
+      Color,
+      Image.configure({
+        inline: false,
+      }),
     ],
     editorProps: {
       attributes: {
@@ -175,6 +222,42 @@ const DocumentEditor = () => {
     documentMutation.mutate({ title, content: editor.getJSON() });
   };
 
+  const handleImageUpload = async (file: File) => {
+    if (!editor || !user || isNewDocument || !id) return;
+
+    // Validation
+    if (!file.type.startsWith('image/')) {
+      toast({ title: 'Archivo no válido', description: 'Por favor, selecciona un archivo de imagen.', variant: 'destructive' });
+      return;
+    }
+    if (file.size > 20 * 1024 * 1024) { // 20MB
+      toast({ title: 'Archivo demasiado grande', description: 'El tamaño máximo de la imagen es de 20MB.', variant: 'destructive' });
+      return;
+    }
+
+    let imageCount = 0;
+    editor.state.doc.descendants((node) => {
+      if (node.type.name === 'image') imageCount += 1;
+    });
+    if (imageCount >= 10) {
+      toast({ title: 'Límite de imágenes alcanzado', description: 'No puedes añadir más de 10 imágenes por documento.', variant: 'destructive' });
+      return;
+    }
+
+    try {
+      const filePath = `${user.id}/${id}/${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('document_images').upload(filePath, file);
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage.from('document_images').getPublicUrl(filePath);
+      if (!publicUrl) throw new Error('No se pudo obtener la URL de la imagen.');
+
+      editor.chain().focus().setImage({ src: publicUrl }).run();
+    } catch (error: any) {
+      toast({ title: 'Error al subir la imagen', description: error.message, variant: 'destructive' });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col h-screen bg-muted">
@@ -214,7 +297,7 @@ const DocumentEditor = () => {
 
       <main className="flex-1 overflow-y-auto p-4 md:p-8">
         <div className="max-w-4xl mx-auto bg-card rounded-lg shadow-lg border border-border">
-          <EditorToolbar editor={editor} />
+          <EditorToolbar editor={editor} onImageUpload={handleImageUpload} isNewDocument={isNewDocument} />
           <div className="p-8 md:p-12">
             <Input
               placeholder="Título del Documento"
