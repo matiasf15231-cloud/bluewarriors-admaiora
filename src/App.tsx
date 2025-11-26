@@ -8,9 +8,11 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./contexts/AuthContext";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomeLayout from "./components/HomeLayout";
+import DashboardLayout from "./components/DashboardLayout";
+import DashboardHome from "./pages/dashboard/Index";
+import Notes from "./pages/dashboard/Notes";
 
 const queryClient = new QueryClient();
 
@@ -31,10 +33,13 @@ const App = () => (
                 path="/dashboard"
                 element={
                   <ProtectedRoute>
-                    <Dashboard />
+                    <DashboardLayout />
                   </ProtectedRoute>
                 }
-              />
+              >
+                <Route index element={<DashboardHome />} />
+                <Route path="notes" element={<Notes />} />
+              </Route>
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
