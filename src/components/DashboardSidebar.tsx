@@ -254,7 +254,7 @@ export const SidebarContent = () => {
                                 <p className="text-sm font-medium text-foreground truncate" title={user.email ?? ''}>
                                     {user.email}
                                 </p>
-                                <Button onClick={handleLogout} variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0 text-muted-foreground hover:text-destructive">
+                                <Button onClick={handleLogout} variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0 text-destructive hover:bg-destructive/10">
                                     <LogOut className="h-4 w-4" />
                                 </Button>
                             </div>
@@ -267,7 +267,7 @@ export const SidebarContent = () => {
                         open ? "hidden" : "flex"
                     )}
                 >
-                    <Button onClick={handleLogout} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive">
+                    <Button onClick={handleLogout} variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10">
                         <LogOut className="h-4 w-4" />
                     </Button>
                 </div>

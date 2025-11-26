@@ -135,7 +135,7 @@ const Navbar = () => {
                     Dashboard
                   </Link>
                 </Button>
-                <Button onClick={handleLogout} variant="ghost" className="w-full justify-start text-destructive hover:text-destructive">
+                <Button onClick={handleLogout} variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10">
                   <LogOut className="h-5 w-5 mr-3" />
                   Cerrar Sesión
                 </Button>

@@ -166,7 +166,7 @@ const Documents = () => {
                       e.stopPropagation();
                       openDeleteDialog(doc);
                     }}
-                    className="text-destructive"
+                    className="text-destructive focus:text-destructive focus:bg-destructive/10"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Eliminar
