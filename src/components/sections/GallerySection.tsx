@@ -9,6 +9,11 @@ import GalleryModal from '@/components/GalleryModal';
 import image1 from '@/assets/IMG_0538.png';
 import image2 from '@/assets/IMG_0539.png';
 
+// Import user-provided videos
+import video1 from '@/assets/1000030709.mp4';
+import video2 from '@/assets/1000030710.mp4';
+import video3 from '@/assets/1000030711.mp4';
+
 interface MediaItem {
   src: string;
   title: string;
@@ -36,6 +41,27 @@ const GallerySection = () => {
       description: 'Vista del robot y la mesa de competencia durante una sesión de práctica.',
       category: 'mesa',
       type: 'photo',
+    },
+    {
+      src: video1,
+      title: 'Sesión con Profesional 1',
+      description: 'Aprendiendo de expertos de la industria para mejorar nuestro proyecto.',
+      category: 'profesionales',
+      type: 'video',
+    },
+    {
+      src: video2,
+      title: 'Sesión con Profesional 2',
+      description: 'Recibiendo feedback valioso sobre nuestro robot y estrategia.',
+      category: 'profesionales',
+      type: 'video',
+    },
+    {
+      src: video3,
+      title: 'Sesión con Profesional 3',
+      description: 'Charla inspiradora sobre innovación y tecnología con un profesional del área.',
+      category: 'profesionales',
+      type: 'video',
     },
   ];
   
@@ -69,7 +95,12 @@ const GallerySection = () => {
     icon: Video
   }];
   
-  const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab);
+  const filteredItems =
+    activeTab === 'all'
+      ? mediaItems
+      : activeTab === 'videos'
+      ? mediaItems.filter((item) => item.type === 'video')
+      : mediaItems.filter((item) => item.category === activeTab);
 
   const handleImageClick = (index: number) => {
     setSelectedImageIndex(index);
