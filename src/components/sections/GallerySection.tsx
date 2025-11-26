@@ -8,6 +8,7 @@ import GalleryModal from '@/components/GalleryModal';
 // Import user-provided images
 import image1 from '@/assets/IMG_0538.png';
 import image2 from '@/assets/IMG_0539.png';
+import videoProfesionales1 from '@/assets/sesion-profesionales-1.mp4';
 
 interface MediaItem {
   src: string;
@@ -36,6 +37,13 @@ const GallerySection = () => {
       description: 'Vista del robot y la mesa de competencia durante una sesión de práctica.',
       category: 'mesa',
       type: 'photo',
+    },
+    {
+      src: videoProfesionales1,
+      title: 'Sesión con Profesionales',
+      description: 'Compartiendo experiencias y aprendizajes con expertos de la industria.',
+      category: 'profesionales',
+      type: 'video',
     },
   ];
   
