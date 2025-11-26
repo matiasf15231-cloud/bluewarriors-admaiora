@@ -122,7 +122,7 @@ const DocumentEditor = () => {
     ],
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert max-w-full focus:outline-none min-h-[400px]',
+        class: 'prose dark:prose-invert max-w-full focus:outline-none min-h-[400px] prose-p:my-2 prose-h1:my-4 prose-h2:my-3 prose-h3:my-2 prose-ul:my-2 prose-ol:my-2 prose-blockquote:my-3',
       },
     },
   });
