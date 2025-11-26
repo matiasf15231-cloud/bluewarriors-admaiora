@@ -52,7 +52,7 @@ const AchievementsSection = () => {
     description: "Objetivo del año"
   }, {
     icon: Star,
-    value: "8",
+    value: "11",
     label: "Miembros del Equipo",
     description: "Talentos diversos"
   }];
