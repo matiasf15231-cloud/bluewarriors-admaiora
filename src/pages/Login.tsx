@@ -57,7 +57,6 @@ const signUpSchema = z.object({
   lastName: z.string().min(1, { message: "El apellido es requerido" }),
   email: z.string().email({ message: "Correo electrónico inválido" }),
   password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres" }),
-  terms: z.boolean().refine(val => val === true, { message: "Debes aceptar los términos y condiciones" }),
 });
 
 const signInSchema = z.object({
@@ -75,7 +74,7 @@ const Login = () => {
 
   const signUpForm = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { firstName: "", lastName: "", email: "", password: "", terms: false },
+    defaultValues: { firstName: "", lastName: "", email: "", password: "" },
   });
 
   const signInForm = useForm<z.infer<typeof signInSchema>>({
@@ -193,20 +192,6 @@ const Login = () => {
                         </div>
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
-                  )} />
-                  <FormField control={signUpForm.control} name="terms" render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel className="text-sm font-normal text-muted-foreground">
-                          Acepto los{" "}
-                          <Link to="#" className="text-primary hover:underline">Términos</Link>{" "}
-                          y{" "}
-                          <Link to="#" className="text-primary hover:underline">Condiciones</Link>
-                        </FormLabel>
-                        <FormMessage />
-                      </div>
                     </FormItem>
                   )} />
                   <Button type="submit" className="w-full" disabled={signUpForm.formState.isSubmitting}>
