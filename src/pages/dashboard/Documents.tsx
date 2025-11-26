@@ -130,26 +130,44 @@ const Documents = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {documents?.map((doc) => (
-          <Card key={doc.id} className="flex flex-col hover:shadow-md transition-shadow cursor-pointer">
-            <CardHeader className="flex-row items-start justify-between flex-1">
-              <div onClick={() => navigate(`/dashboard/documents/${doc.id}`)}>
-                <CardTitle className="text-lg">{doc.title || 'Documento sin título'}</CardTitle>
+          <Card
+            key={doc.id}
+            className="flex flex-col hover:shadow-lg transition-shadow cursor-pointer group"
+            onClick={() => navigate(`/dashboard/documents/${doc.id}`)}
+          >
+            <CardHeader className="flex-row items-start justify-between w-full">
+              <div>
+                <CardTitle className="text-lg group-hover:text-primary transition-colors">{doc.title || 'Documento sin título'}</CardTitle>
                 <CardDescription>
                   Actualizado hace {formatDistanceToNow(new Date(doc.updated_at), { locale: es })}
                 </CardDescription>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 flex-shrink-0"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => navigate(`/dashboard/documents/${doc.id}`)}>
+                  <DropdownMenuItem onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/dashboard/documents/${doc.id}`);
+                  }}>
                     <Edit className="h-4 w-4 mr-2" />
                     Editar
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => openDeleteDialog(doc)} className="text-destructive">
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openDeleteDialog(doc);
+                    }}
+                    className="text-destructive"
+                  >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Eliminar
                   </DropdownMenuItem>
