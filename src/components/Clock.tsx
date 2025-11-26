@@ -23,19 +23,20 @@ const Clock = ({ variant = 'large' }: ClockProps) => {
     return (
       <div className="text-right">
         <p className="text-xl font-semibold text-foreground tracking-tight">
-          {format(time, 'HH:mm:ss')}
+          {format(time, 'hh:mm:ss a')}
         </p>
         <p className="text-xs text-muted-foreground">
           {format(time, "EEEE, d 'de' MMMM", { locale: es })}
         </p>
       </div>
-    );
+    </div>
+  );
   }
 
   return (
     <div className="text-center">
       <p className="text-5xl font-bold text-foreground tracking-wider">
-        {format(time, 'HH:mm:ss')}
+        {format(time, 'hh:mm:ss a')}
       </p>
       <p className="text-lg text-muted-foreground">
         {format(time, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
