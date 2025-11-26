@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Save, Bold, Italic, Strikethrough, List, ListOrdered, Heading1, Heading2, Heading3, Quote, Code, Pilcrow, ImageIcon, Loader2 } from 'lucide-react';
-import { useEditor, EditorContent, type Editor } from '@tiptap/react';
-import { BubbleMenu } from '@tiptap/extension-bubble-menu';
+import { useEditor, EditorContent, type Editor, BubbleMenu } from '@tiptap/react';
+import BubbleMenuExtension from '@tiptap/extension-bubble-menu';
 import StarterKit from '@tiptap/starter-kit';
 import { Color } from '@tiptap/extension-color';
 import { TextStyle } from '@tiptap/extension-text-style';
@@ -182,6 +182,7 @@ const DocumentEditor = () => {
       TextStyle, 
       Color,
       ResizableImage,
+      BubbleMenuExtension,
     ],
     editorProps: {
       attributes: {
