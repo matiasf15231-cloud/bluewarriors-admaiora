@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Trophy, Users, Bot, Medal, Camera, LogIn, LayoutDashboard, LogOut } from 'lucide-react';
+import { Menu, X, Trophy, Users, Bot, Medal, Camera, LogIn, LayoutDashboard, LogOut, UserPlus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -80,12 +80,20 @@ const Navbar = () => {
                 </Button>
               </div>
             ) : (
-              <Button asChild size="sm" className="group bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-all duration-300">
-                <Link to="/login">
-                  <LogIn className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:translate-x-1" />
-                  Iniciar Sesión
-                </Link>
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button asChild variant="ghost" size="sm" className="hover:bg-secondary hover:scale-105 transition-all duration-300">
+                  <Link to="/login">
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Iniciar Sesión
+                  </Link>
+                </Button>
+                <Button asChild size="sm" className="group bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-all duration-300">
+                  <Link to="/login">
+                    <UserPlus className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:translate-x-1" />
+                    Registrarse
+                  </Link>
+                </Button>
+              </div>
             )}
             <ThemeToggle />
           </div>
@@ -138,12 +146,20 @@ const Navbar = () => {
                 </Button>
               </div>
             ) : (
-              <Button asChild className="w-full">
-                <Link to="/login">
-                  <LogIn className="h-5 w-5 mr-3" />
-                  Iniciar Sesión / Registrarse
-                </Link>
-              </Button>
+              <div className="space-y-1">
+                <Button asChild variant="ghost" className="w-full justify-start">
+                  <Link to="/login">
+                    <LogIn className="h-5 w-5 mr-3" />
+                    Iniciar Sesión
+                  </Link>
+                </Button>
+                <Button asChild className="w-full">
+                  <Link to="/login">
+                    <UserPlus className="h-5 w-5 mr-3" />
+                    Registrarse
+                  </Link>
+                </Button>
+              </div>
             )}
           </div>
         </div>
