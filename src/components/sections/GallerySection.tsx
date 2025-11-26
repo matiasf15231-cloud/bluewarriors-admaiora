@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink } from 'lucide-react';
+import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink, Target } from 'lucide-react';
 import GalleryModal from '@/components/GalleryModal';
 
 // Import user-provided images
@@ -59,6 +59,10 @@ const GallerySection = () => {
     id: 'mesa',
     name: 'Mesa',
     icon: Bot
+  }, {
+    id: 'misiones',
+    name: 'Misiones',
+    icon: Target
   }, {
     id: 'videos',
     name: 'Videos',
