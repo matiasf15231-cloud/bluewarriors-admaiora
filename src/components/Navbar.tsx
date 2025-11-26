@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Trophy, Users, Bot, Medal, Camera } from 'lucide-react';
+import { Menu, X, Trophy, Users, Bot, Medal, Camera, LogIn, LayoutDashboard, LogOut } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { session } = useAuth();
+  const navigate = useNavigate();
 
   const navItems = [
     { name: 'Inicio', href: '#inicio', icon: Trophy },
@@ -15,11 +20,26 @@ const Navbar = () => {
   ];
 
   const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (window.location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.querySelector(href);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
     setIsOpen(false);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
   };
 
   return (
@@ -28,9 +48,9 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold bg-gradient-hero bg-clip-text text-transparent">
+            <Link to="/" className="text-2xl font-bold bg-gradient-hero bg-clip-text text-transparent">
               BlueWarriors
-            </h1>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
@@ -47,6 +67,26 @@ const Navbar = () => {
                 </button>
               ))}
             </div>
+            {session ? (
+              <div className="flex items-center space-x-2">
+                <Button asChild variant="ghost" size="sm" className="hover:bg-secondary hover:scale-105 transition-all duration-300">
+                  <Link to="/dashboard">
+                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </Link>
+                </Button>
+                <Button onClick={handleLogout} variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 hover:text-destructive hover:scale-105 transition-all duration-300">
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <Button asChild size="sm" className="group bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-all duration-300">
+                <Link to="/login">
+                  <LogIn className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:translate-x-1" />
+                  Iniciar Sesión
+                </Link>
+              </Button>
+            )}
             <ThemeToggle />
           </div>
 
@@ -83,6 +123,28 @@ const Navbar = () => {
                 </button>
               );
             })}
+            <div className="border-t border-border my-2"></div>
+            {session ? (
+              <div className="space-y-1">
+                <Button asChild variant="ghost" className="w-full justify-start">
+                  <Link to="/dashboard">
+                    <LayoutDashboard className="h-5 w-5 mr-3" />
+                    Dashboard
+                  </Link>
+                </Button>
+                <Button onClick={handleLogout} variant="ghost" className="w-full justify-start text-destructive hover:text-destructive">
+                  <LogOut className="h-5 w-5 mr-3" />
+                  Cerrar Sesión
+                </Button>
+              </div>
+            ) : (
+              <Button asChild className="w-full">
+                <Link to="/login">
+                  <LogIn className="h-5 w-5 mr-3" />
+                  Iniciar Sesión / Registrarse
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
       )}
