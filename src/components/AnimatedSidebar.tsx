@@ -12,6 +12,7 @@ interface Link {
   label: string;
   href: string;
   icon: React.ReactNode;
+  end?: boolean;
 }
 
 interface SidebarContextProps {
@@ -169,14 +170,13 @@ export const SidebarLink = ({
   className?: string;
 }) => {
   const { open, animate, setOpen } = useSidebar();
-  const location = useLocation();
-  const isActive = location.pathname.startsWith(link.href);
 
   return (
     <NavLink
       to={link.href}
+      end={link.end}
       onClick={() => setOpen(false)}
-      className={cn(
+      className={({ isActive }) => cn(
         "flex items-center justify-start gap-4 group/sidebar p-3 rounded-lg",
         isActive ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-secondary",
         className
@@ -206,16 +206,12 @@ export const AnimatedSidebarContent = () => {
         navigate('/');
     };
 
-    const links = [
-        {
-            label: "Volver al Inicio",
-            href: "/",
-            icon: <Undo2 className="h-5 w-5" />,
-        },
+    const mainLinks: Link[] = [
         {
             label: "Home",
             href: "/dashboard",
             icon: <Home className="h-5 w-5" />,
+            end: true,
         },
         {
             label: "Documentos",
@@ -224,15 +220,36 @@ export const AnimatedSidebarContent = () => {
         },
     ];
 
+    const returnLink: Link = {
+        label: "Volver al Inicio",
+        href: "/",
+        icon: <Undo2 className="h-5 w-5" />,
+    };
+
     return (
         <div className={cn("flex flex-col justify-between h-full", open ? "" : "items-center")}>
-            <div className="flex flex-col flex-1 mt-8 w-full space-y-2">
-                {links.map((link, idx) => (
-                    <SidebarLink key={idx} link={link} />
-                ))}
+            <div>
+                <div className="px-3 py-2">
+                    <motion.div
+                        animate={{
+                            display: open ? "block" : "none",
+                            opacity: open ? 1 : 0,
+                        }}
+                    >
+                        <span className="text-xl font-bold bg-gradient-hero bg-clip-text text-transparent">
+                            BlueWarriors DB
+                        </span>
+                    </motion.div>
+                </div>
+                <div className="flex flex-col mt-4 w-full space-y-2">
+                    {mainLinks.map((link, idx) => (
+                        <SidebarLink key={idx} link={link} />
+                    ))}
+                </div>
             </div>
 
-            <div className="w-full">
+            <div className="w-full space-y-2">
+                <SidebarLink link={returnLink} />
                 {user && (
                     <div className={cn(
                         "flex items-center w-full p-2 rounded-lg transition-colors duration-200",
