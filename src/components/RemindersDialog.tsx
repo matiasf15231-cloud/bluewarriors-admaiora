@@ -13,10 +13,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { BellRing, CalendarIcon, Plus, Trash2, Loader2 } from 'lucide-react';
+import { Bell, BellRing, CalendarIcon, Plus, Trash2, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { useNotifications } from '@/hooks/useNotifications';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 // Zod schema for form validation
 const reminderSchema = z.object({
@@ -39,6 +41,7 @@ const RemindersDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { permission, requestNotificationPermission } = useNotifications();
 
   // Form setup
   const form = useForm<ReminderFormValues>({
@@ -121,6 +124,19 @@ const RemindersDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
             Añade, gestiona y completa tus tareas y recordatorios aquí.
           </DialogDescription>
         </DialogHeader>
+
+        {permission === 'default' && (
+          <Alert className="mb-4">
+            <Bell className="h-4 w-4" />
+            <AlertTitle>¡No te pierdas nada!</AlertTitle>
+            <AlertDescription className="flex items-center justify-between">
+              Activa las notificaciones para recibir avisos de tus recordatorios.
+              <Button variant="outline" size="sm" onClick={requestNotificationPermission}>
+                Activar
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Add Reminder Form */}
         <Form {...form}>
