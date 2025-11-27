@@ -13,58 +13,62 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders })
   }
 
+  let requestBody; // To store the body for logging on error
+
   try {
     const { prompt, history } = await req.json()
     if (!prompt) {
       throw new Error('Prompt is required');
     }
 
-    // Retrieve the secure API key from Supabase secrets
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY')
     if (!geminiApiKey) {
         throw new Error('API key for Gemini not found. Please check the GEMINI_API_KEY secret in your Supabase project settings.');
     }
 
-    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`
+    // Using the 'latest' tag to ensure we're on the most recent version of the model.
+    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`
 
-    // Map roles from 'assistant' to 'model' for the Gemini API
     const mappedHistory = (history || []).map((message: { role: string; content: string }) => ({
       role: message.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: message.content }]
     }));
 
-    // Sanitize history to ensure roles alternate correctly, preventing API errors
-    const alternatingHistory = mappedHistory.reduce((acc, current) => {
-        if (acc.length === 0 || acc[acc.length - 1].role !== current.role) {
-            acc.push(current);
+    // More robust history sanitation: ensures roles alternate and starts with a user message.
+    const alternatingHistory = [];
+    for (const message of mappedHistory) {
+        if (alternatingHistory.length === 0) {
+            if (message.role === 'user') {
+                alternatingHistory.push(message);
+            }
+        } else if (message.role !== alternatingHistory[alternatingHistory.length - 1].role) {
+            alternatingHistory.push(message);
         }
-        return acc;
-    }, []);
+    }
 
     const contents = [
       ...alternatingHistory,
       { role: 'user', parts: [{ text: prompt }] }
     ];
 
-    // Use the dedicated systemInstruction field for better guidance
     const systemInstruction = {
       parts: [{ text: "Eres un asistente amigable y servicial para un equipo de robótica de FIRST LEGO League llamado BlueWarriors. Proporciona respuestas de longitud media (alrededor de 3-5 frases). Sé conciso y ve al grano. Evita respuestas excesivamente largas." }]
     };
 
-    // Configuration to set a hard limit on the response size
     const generationConfig = {
       maxOutputTokens: 300,
     };
 
-    // Call the Gemini API
+    requestBody = {
+      contents: contents,
+      systemInstruction: systemInstruction,
+      generationConfig: generationConfig,
+    };
+
     const geminiResponse = await fetch(geminiApiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: contents,
-        systemInstruction: systemInstruction,
-        generationConfig: generationConfig,
-      }),
+      body: JSON.stringify(requestBody),
     })
 
     if (!geminiResponse.ok) {
@@ -89,8 +93,11 @@ serve(async (req) => {
       status: 200,
     })
   } catch (error) {
-    console.error('Error in Edge Function:', error.message)
-    // Return a proper server error status
+    console.error('Error in Edge Function:', error.message);
+    // Log the request body that caused the error for easier debugging
+    if (requestBody) {
+      console.error('Request body sent to Gemini:', JSON.stringify(requestBody, null, 2));
+    }
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
