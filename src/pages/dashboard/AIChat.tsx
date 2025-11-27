@@ -25,6 +25,7 @@ const AIChat = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [messages, setMessages] = useState<Message[]>([]);
+  const [animatingMessageIndex, setAnimatingMessageIndex] = useState<number | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -69,6 +70,7 @@ const AIChat = () => {
   useEffect(() => {
     if (initialMessages) {
       setMessages(initialMessages);
+      setAnimatingMessageIndex(null); // Ensure no animation on loading history
     } else if (!conversationId) {
       setMessages([]);
     }
@@ -146,6 +148,7 @@ const AIChat = () => {
       return { newConversationId: convId, assistantMessage };
     },
     onSuccess: ({ newConversationId, assistantMessage }) => {
+      setAnimatingMessageIndex(messages.length); // Set index for animation before adding the new message
       setMessages((prev) => [...prev, assistantMessage]);
       queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] });
       queryClient.invalidateQueries({ queryKey: ['dailyMessageCount', user?.id] });
@@ -231,8 +234,8 @@ const AIChat = () => {
                     </Avatar>
                     <div className="group relative max-w-2xl rounded-lg bg-secondary">
                       <div className="prose prose-sm dark:prose-invert max-w-none p-3 pr-10">
-                        {index === messages.length - 1 && !isPending ? (
-                          <Typewriter text={message.content} />
+                        {index === animatingMessageIndex ? (
+                          <Typewriter text={message.content} onComplete={() => setAnimatingMessageIndex(null)} />
                         ) : (
                           <ReactMarkdown>{message.content}</ReactMarkdown>
                         )}

@@ -4,9 +4,10 @@ import ReactMarkdown from 'react-markdown';
 interface TypewriterProps {
   text: string;
   speed?: number;
+  onComplete?: () => void;
 }
 
-const Typewriter = ({ text, speed = 20 }: TypewriterProps) => {
+const Typewriter = ({ text, speed = 20, onComplete }: TypewriterProps) => {
   const [displayedText, setDisplayedText] = useState('');
 
   useEffect(() => {
@@ -19,6 +20,7 @@ const Typewriter = ({ text, speed = 20 }: TypewriterProps) => {
           i++;
         } else {
           clearInterval(typingInterval);
+          onComplete?.();
         }
       }, speed);
 
@@ -26,7 +28,7 @@ const Typewriter = ({ text, speed = 20 }: TypewriterProps) => {
         clearInterval(typingInterval);
       };
     }
-  }, [text, speed]);
+  }, [text, speed, onComplete]);
 
   return <ReactMarkdown>{displayedText}</ReactMarkdown>;
 };
