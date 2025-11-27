@@ -130,42 +130,50 @@ const AIChat = () => {
       <Card className="flex-1 flex flex-col bg-transparent border-none shadow-none">
         <CardContent className="flex-1 flex flex-col p-0">
           <ScrollArea className="flex-1 p-6" ref={scrollAreaRef}>
-            <div className="space-y-6">
-              {isLoadingMessages ? (
-                <div className="flex justify-center items-center h-full">
-                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                </div>
-              ) : messages.map((message, index) => (
-                <div key={index} className={`flex items-start gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}>
-                  {message.role === 'assistant' && (
+            {isLoadingMessages ? (
+              <div className="flex justify-center items-center h-full">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : messages.length === 0 && !isPending ? (
+              <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                <Sparkles className="h-12 w-12 mb-4 text-primary" />
+                <h2 className="text-2xl font-semibold text-foreground">¿En qué puedo ayudarte hoy?</h2>
+                <p>Escribe tu pregunta o solicitud a continuación para comenzar.</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {messages.map((message, index) => (
+                  <div key={index} className={`flex items-start gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}>
+                    {message.role === 'assistant' && (
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={logo} alt="AI Avatar" />
+                        <AvatarFallback><Sparkles /></AvatarFallback>
+                      </Avatar>
+                    )}
+                    <div className={`max-w-2xl p-3 rounded-lg ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
+                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    </div>
+                    {message.role === 'user' && (
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user?.user_metadata?.avatar_url} />
+                        <AvatarFallback><User /></AvatarFallback>
+                      </Avatar>
+                    )}
+                  </div>
+                ))}
+                {isPending && (
+                  <div className="flex items-start gap-4">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={logo} alt="AI Avatar" />
                       <AvatarFallback><Sparkles /></AvatarFallback>
                     </Avatar>
-                  )}
-                  <div className={`max-w-2xl p-3 rounded-lg ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    <div className="max-w-md p-3 rounded-lg bg-secondary flex items-center">
+                      <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                    </div>
                   </div>
-                  {message.role === 'user' && (
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user?.user_metadata?.avatar_url} />
-                      <AvatarFallback><User /></AvatarFallback>
-                    </Avatar>
-                  )}
-                </div>
-              ))}
-              {isPending && (
-                <div className="flex items-start gap-4">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={logo} alt="AI Avatar" />
-                    <AvatarFallback><Sparkles /></AvatarFallback>
-                  </Avatar>
-                  <div className="max-w-md p-3 rounded-lg bg-secondary flex items-center">
-                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                  </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </ScrollArea>
           <div className="border-t">
             {error && (
