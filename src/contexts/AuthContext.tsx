@@ -32,12 +32,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        const { data: profileData } = await supabase
+        const { data: profileData, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', session.user.id)
           .single();
-        setProfile(profileData);
+        if (error) {
+          console.error("Error fetching profile:", error.message);
+          setProfile(null);
+        } else {
+          setProfile(profileData);
+        }
       }
       setLoading(false);
     };
@@ -49,12 +54,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        const { data: profileData } = await supabase
+        const { data: profileData, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', session.user.id)
           .single();
-        setProfile(profileData);
+        if (error) {
+          console.error("Error fetching profile on auth change:", error.message);
+          setProfile(null);
+        } else {
+          setProfile(profileData);
+        }
       } else {
         setProfile(null);
       }
