@@ -26,8 +26,8 @@ serve(async (req) => {
         throw new Error('API key for Gemini not found. Please check the GEMINI_API_KEY secret in your Supabase project settings.');
     }
 
-    // Using the 'latest' tag to ensure we're on the most recent version of the model.
-    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`
+    // Using the user-specified model name: Gemini 2.5 Flash
+    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`
 
     const mappedHistory = (history || []).map((message: { role: string; content: string }) => ({
       role: message.role === 'assistant' ? 'model' : 'user',
