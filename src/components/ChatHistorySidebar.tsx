@@ -104,7 +104,7 @@ const ChatHistorySidebar = () => {
             </div>
           ) : conversations && conversations.length > 0 ? (
             conversations.map((convo) => (
-              <div key={convo.id} className="group relative">
+              <div key={convo.id} className="group relative overflow-hidden rounded-lg">
                 <NavLink
                   to={`/dashboard/ai-chat/${convo.id}`}
                   className={({ isActive }) => cn(
