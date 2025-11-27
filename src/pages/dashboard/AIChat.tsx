@@ -122,8 +122,14 @@ const AIChat = () => {
       const { data: aiFuncData, error: aiFuncError } = await supabase.functions.invoke('ai-chat', {
         body: { prompt },
       });
-      if (aiFuncError) throw new Error(`AI function error: ${aiFuncError.message}`);
-      if (aiFuncData.error) throw new Error(`AI logic error: ${aiFuncData.error}`);
+      
+      if (aiFuncError) {
+        const specificError = aiFuncError.context?.error || aiFuncError.message;
+        throw new Error(specificError);
+      }
+      if (aiFuncData.error) {
+        throw new Error(aiFuncData.error);
+      }
       
       const aiResponse = aiFuncData.response;
       const assistantMessage: Message = { role: 'assistant', content: aiResponse };
@@ -147,7 +153,7 @@ const AIChat = () => {
       }
     },
     onError: (err) => {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title: "Error del Asistente IA", description: err.message, variant: "destructive" });
     }
   });
 
