@@ -22,13 +22,29 @@ const AIChat = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const { mutate: sendMessage, isPending, error } = useMutation({
+  const { mutate: sendMessage, isPending, error, reset } = useMutation({
     mutationFn: async (prompt: string) => {
       const { data, error } = await supabase.functions.invoke('ai-chat', {
         body: { prompt },
       });
-      if (error) throw new Error(error.message);
-      if (data.error) throw new Error(data.error);
+
+      if (error) {
+        // Try to parse the detailed error message from the function's response
+        let detailedError = error.message;
+        try {
+          const errorBody = JSON.parse(error.context.body);
+          if (errorBody.error) {
+            detailedError = errorBody.error;
+          }
+        } catch (e) {
+          // Parsing failed, stick with the default message
+        }
+        throw new Error(detailedError);
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
       return data.response;
     },
     onSuccess: (response) => {
@@ -38,6 +54,7 @@ const AIChat = () => {
 
   const handleSendMessage = (prompt: string, withSearch: boolean) => {
     if (!prompt.trim()) return;
+    reset(); // Clear previous errors
     if (withSearch) {
       toast({
         title: "Búsqueda web no implementada",
