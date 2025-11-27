@@ -11,6 +11,7 @@ import { AIInputWithSearch } from '@/components/AIInputWithSearch';
 import { useToast } from '@/hooks/use-toast';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import { CopyButton } from '@/components/CopyButton';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -166,6 +167,20 @@ const AIChat = () => {
     sendMessage({ prompt, currentConversationId: conversationId, history: currentHistory });
   };
 
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast({
+        title: "Copiado al portapapeles",
+      });
+    }).catch(err => {
+      console.error('Failed to copy text: ', err);
+      toast({
+        title: "Error al copiar",
+        variant: "destructive",
+      });
+    });
+  };
+
   useEffect(() => {
     if (scrollAreaRef.current) {
       const viewport = scrollAreaRef.current.querySelector('div');
@@ -193,31 +208,38 @@ const AIChat = () => {
             </div>
           ) : (
             <div className="space-y-6">
-              {messages.map((message, index) => (
-                <div key={index} className={`flex items-start gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}>
-                  {message.role === 'assistant' && (
-                    <Avatar className="h-8 w-8">
+              {messages.map((message, index) => {
+                if (message.role === 'user') {
+                  return (
+                    <div key={index} className="flex items-start gap-4 justify-end">
+                      <div className="max-w-2xl p-3 rounded-lg bg-primary text-primary-foreground">
+                        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                      </div>
+                      <Avatar className="h-8 w-8 flex-shrink-0">
+                        <AvatarImage src={user?.user_metadata?.avatar_url} />
+                        <AvatarFallback><User /></AvatarFallback>
+                      </Avatar>
+                    </div>
+                  );
+                }
+                return (
+                  <div key={index} className="flex items-start gap-4">
+                    <Avatar className="h-8 w-8 flex-shrink-0">
                       <AvatarImage src={logo} alt="AI Avatar" />
                       <AvatarFallback><Sparkles /></AvatarFallback>
                     </Avatar>
-                  )}
-                  <div className={`max-w-2xl p-3 rounded-lg ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
-                    {message.role === 'assistant' ? (
-                      <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <div className="group relative max-w-2xl rounded-lg bg-secondary">
+                      <div className="prose prose-sm dark:prose-invert max-w-none p-3 pr-10">
                         <ReactMarkdown>{message.content}</ReactMarkdown>
                       </div>
-                    ) : (
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                    )}
+                      <CopyButton
+                        onClick={() => handleCopy(message.content)}
+                        className="absolute top-1 right-1 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                      />
+                    </div>
                   </div>
-                  {message.role === 'user' && (
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user?.user_metadata?.avatar_url} />
-                      <AvatarFallback><User /></AvatarFallback>
-                    </Avatar>
-                  )}
-                </div>
-              ))}
+                );
+              })}
               {isPending && (
                 <div className="flex items-start gap-4">
                   <Avatar className="h-8 w-8">
