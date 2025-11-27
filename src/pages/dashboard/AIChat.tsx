@@ -135,10 +135,8 @@ const AIChat = () => {
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
             ) : messages.length === 0 && !isPending ? (
-              <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-                <Sparkles className="h-12 w-12 mb-4 text-primary" />
+              <div className="flex flex-col items-center justify-center h-full text-center">
                 <h2 className="text-2xl font-semibold text-foreground">¿En qué puedo ayudarte hoy?</h2>
-                <p>Escribe tu pregunta o solicitud a continuación para comenzar.</p>
               </div>
             ) : (
               <div className="space-y-6">
