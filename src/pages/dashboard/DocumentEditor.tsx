@@ -5,11 +5,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Loader2, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import ReactMarkdown from 'react-markdown';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const DocumentEditor = () => {
   const { id: documentId } = useParams();
@@ -42,11 +42,8 @@ const DocumentEditor = () => {
     if (documentData) {
       setTitle(documentData.title || '');
       const docContent = documentData.content;
-      // Safely handle content to prevent crashes on null or unexpected formats
-      if (docContent && typeof docContent === 'object' && 'markdown' in docContent) {
-        setContent(String((docContent as any).markdown || ''));
-      } else if (typeof docContent === 'string') { // For backward compatibility
-        setContent(docContent);
+      if (docContent && typeof docContent === 'object' && 'html' in docContent) {
+        setContent(String((docContent as any).html || ''));
       } else {
         setContent('');
       }
@@ -57,7 +54,7 @@ const DocumentEditor = () => {
     mutationFn: async ({ title, content }: { title: string; content: string }) => {
       if (!user) throw new Error('User not authenticated');
       
-      const contentToSave = { markdown: content };
+      const contentToSave = { html: content };
 
       if (isNewDocument) {
         const { data, error } = await supabase
@@ -94,15 +91,24 @@ const DocumentEditor = () => {
     mutation.mutate({ title: title || 'Documento sin título', content });
   };
 
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'align': [] }],
+      ['link', 'image', 'blockquote', 'code-block'],
+      ['clean']
+    ],
+  };
+
   if (isLoadingDocument) {
     return (
       <div className="flex flex-col h-screen bg-muted p-8 space-y-4">
         <Skeleton className="h-10 w-1/4" />
         <Skeleton className="h-12 w-full" />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1">
-          <Skeleton className="h-full w-full" />
-          <Skeleton className="h-full w-full" />
-        </div>
+        <Skeleton className="h-full w-full" />
       </div>
     );
   }
@@ -124,25 +130,22 @@ const DocumentEditor = () => {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="flex flex-col gap-4">
-          <Input
-            placeholder="Título del documento"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="text-2xl font-bold h-12 border-0 focus-visible:ring-0 shadow-none px-0 bg-transparent"
-          />
-          <Textarea
-            placeholder="Escribe tu contenido aquí. Puedes usar Markdown."
+      <main className="flex-1 flex flex-col p-4 md:p-8 overflow-hidden">
+        <Input
+          placeholder="Título del documento"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="text-2xl font-bold h-12 border-0 focus-visible:ring-0 shadow-none px-0 bg-transparent flex-shrink-0"
+        />
+        <div className="flex-1 mt-4 bg-background rounded-lg border overflow-hidden [&_.ql-container]:border-0">
+          <ReactQuill
+            theme="snow"
             value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="flex-1 resize-none text-base border rounded-lg p-4 bg-background"
+            onChange={setContent}
+            className="h-full"
+            modules={modules}
+            placeholder="Empieza a escribir tu increíble documento..."
           />
-        </div>
-        <div className="bg-background rounded-lg border p-4 overflow-y-auto">
-          <div className="prose dark:prose-invert max-w-none">
-            <ReactMarkdown>{content || "Vista previa..."}</ReactMarkdown>
-          </div>
         </div>
       </main>
     </div>
