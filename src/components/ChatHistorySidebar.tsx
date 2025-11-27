@@ -113,7 +113,7 @@ const ChatHistorySidebar = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute top-1/2 right-1 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-1/2 right-1 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();

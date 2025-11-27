@@ -183,7 +183,7 @@ const AIChat = () => {
   return (
     <div className="h-full flex flex-col">
       <Card className="flex-1 flex flex-col bg-transparent border-none shadow-none">
-        <CardContent className="flex-1 flex flex-col p-0">
+        <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
           {renderChatContent()}
           <div className="border-t">
             {error && (
