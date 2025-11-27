@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,7 +11,6 @@ import logo from '@/assets/bluewarriors-logo.png';
 import { AIInputWithSearch } from '@/components/AIInputWithSearch';
 import { useToast } from '@/hooks/use-toast';
 import { useParams, useNavigate } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -23,17 +22,14 @@ const AIChat = () => {
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const lastLoadedConversationId = useRef<string | undefined>();
-
+  // Fetch messages for the current conversation
   const { data: initialMessages, isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', conversationId],
-    queryFn: async (): Promise<Message[]> => {
+    queryFn: async () => {
       if (!conversationId || !user) return [];
       const { data, error } = await supabase
         .from('messages')
@@ -43,115 +39,81 @@ const AIChat = () => {
       if (error) throw new Error(error.message);
       return data as Message[];
     },
-    enabled: !!user && !!conversationId,
-    refetchOnWindowFocus: false,
+    enabled: !!conversationId && !!user,
   });
 
   useEffect(() => {
-    // If the conversationId from URL changes, and it's different from the one we last loaded,
-    // and we have data for it, then update our local state.
-    if (conversationId && initialMessages && lastLoadedConversationId.current !== conversationId) {
+    if (initialMessages) {
       setMessages(initialMessages);
-      lastLoadedConversationId.current = conversationId;
     } else if (!conversationId) {
-      // If there's no conversationId in the URL, it's a new chat. Clear messages.
-      setMessages([]);
-      lastLoadedConversationId.current = undefined;
+      setMessages([]); // Clear messages for a new chat
     }
-  }, [conversationId, initialMessages]);
+  }, [initialMessages, conversationId]);
 
-  const handleSendMessage = async (prompt: string) => {
-    if (!prompt.trim() || isPending) return;
+  const { mutate: sendMessage, isPending, error, reset } = useMutation({
+    mutationFn: async ({ prompt, currentConversationId }: { prompt: string; currentConversationId: string | undefined }) => {
+      let convId = currentConversationId;
 
-    setError(null);
-    setIsPending(true);
-
-    const userMessage: Message = { role: 'user', content: prompt };
-    // Immediately update local state to show user message and a placeholder for the AI response.
-    setMessages((prev) => [...prev, userMessage, { role: 'assistant', content: '' }]);
-
-    let currentConversationId = conversationId;
-    let isNewConversation = false;
-
-    try {
-      // 1. Create conversation if it's a new chat
-      if (!currentConversationId) {
-        isNewConversation = true;
+      // 1. If it's a new chat, create the conversation first
+      if (!convId) {
         const { data: convData, error: convError } = await supabase
           .from('conversations')
           .insert({ user_id: user!.id, title: prompt.substring(0, 40) })
           .select('id')
           .single();
         if (convError) throw new Error(`Failed to create conversation: ${convError.message}`);
-        currentConversationId = convData.id;
+        convId = convData.id;
       }
 
       // 2. Save user message
-      await supabase.from('messages').insert({
-        conversation_id: currentConversationId,
+      const userMessage: Message = { role: 'user', content: prompt };
+      const { error: userMsgError } = await supabase.from('messages').insert({
+        conversation_id: convId,
         user_id: user!.id,
         ...userMessage,
       });
+      if (userMsgError) throw new Error(`Failed to save user message: ${userMsgError.message}`);
 
-      // 3. Stream AI response
-      const { data: sessionData } = await supabase.auth.getSession();
-      const response = await fetch(`https://dfsqcviqgubwkuntwppt.supabase.co/functions/v1/ai-chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionData.session?.access_token}`,
-        },
-        body: JSON.stringify({ prompt }),
+      // 3. Call the AI function
+      const { data: aiFuncData, error: aiFuncError } = await supabase.functions.invoke('ai-chat', {
+        body: { prompt },
       });
-
-      if (!response.ok || !response.body) {
-        const errorText = await response.text();
-        throw new Error(`AI function error: ${errorText}`);
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let fullResponse = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        fullResponse += chunk;
-        // Update the content of the last message (the AI placeholder) in our local state
-        setMessages((prev) => {
-          const newMessages = [...prev];
-          newMessages[newMessages.length - 1].content = fullResponse;
-          return newMessages;
-        });
-      }
-
-      // 4. Save full assistant response
-      await supabase.from('messages').insert({
-        conversation_id: currentConversationId,
-        user_id: user!.id,
-        role: 'assistant',
-        content: fullResponse,
-      });
-
-      // If we created a new conversation, navigate to its URL and update our ref.
-      if (isNewConversation) {
-        navigate(`/dashboard/ai-chat/${currentConversationId}`, { replace: true });
-        lastLoadedConversationId.current = currentConversationId;
-      }
+      if (aiFuncError) throw new Error(`AI function error: ${aiFuncError.message}`);
+      if (aiFuncData.error) throw new Error(`AI logic error: ${aiFuncData.error}`);
       
-      // Invalidate queries to keep sidebar and future loads fresh.
-      queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] });
-      queryClient.invalidateQueries({ queryKey: ['messages', currentConversationId] });
+      const aiResponse = aiFuncData.response;
+      const assistantMessage: Message = { role: 'assistant', content: aiResponse };
 
-    } catch (err: any) {
-      const errorMessage = err.message || "An unknown error occurred.";
-      setError(errorMessage);
-      toast({ title: "Error", description: errorMessage, variant: "destructive" });
-      // On error, remove the user message and AI placeholder from local state
-      setMessages(prev => prev.slice(0, -2));
-    } finally {
-      setIsPending(false);
+      // 4. Save assistant message
+      const { error: assistantMsgError } = await supabase.from('messages').insert({
+        conversation_id: convId,
+        user_id: user!.id,
+        ...assistantMessage,
+      });
+      if (assistantMsgError) throw new Error(`Failed to save assistant message: ${assistantMsgError.message}`);
+
+      return { newConversationId: convId, assistantMessage };
+    },
+    onSuccess: ({ newConversationId, assistantMessage }) => {
+      setMessages((prev) => [...prev, assistantMessage]);
+      queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] });
+      
+      // If it was a new chat, navigate to the new conversation URL
+      if (!conversationId) {
+        navigate(`/dashboard/ai-chat/${newConversationId}`, { replace: true });
+      }
+    },
+    onError: (err) => {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
     }
+  });
+
+  const handleSendMessage = (prompt: string) => {
+    if (!prompt.trim()) return;
+    reset();
+    const userMessage: Message = { role: 'user', content: prompt };
+    setMessages((prev) => [...prev, userMessage]);
+    sendMessage({ prompt, currentConversationId: conversationId });
   };
 
   useEffect(() => {
@@ -164,7 +126,7 @@ const AIChat = () => {
   }, [messages]);
 
   const renderChatContent = () => {
-    if (isLoadingMessages && !lastLoadedConversationId.current) {
+    if (isLoadingMessages) {
       return (
         <div className="flex-1 flex justify-center items-center">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -174,12 +136,8 @@ const AIChat = () => {
 
     if (messages.length === 0 && !isPending) {
       return (
-        <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-          <img src={logo} alt="BlueWarriors Logo" className="w-24 h-24 mb-4" />
+        <div className="flex-1 flex flex-col items-center justify-center text-center">
           <h2 className="text-2xl font-semibold text-foreground">¿En qué puedo ayudarte hoy?</h2>
-          <p className="text-muted-foreground mt-2 max-w-md">
-            Puedes preguntarme sobre el equipo, nuestros robots, o cualquier otra cosa. ¡Estoy aquí para ayudar!
-          </p>
         </div>
       );
     }
@@ -196,9 +154,7 @@ const AIChat = () => {
                 </Avatar>
               )}
               <div className={`max-w-2xl p-3 rounded-lg ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
-                <ReactMarkdown className="prose dark:prose-invert max-w-none prose-p:m-0 prose-strong:text-inherit">
-                  {message.content}
-                </ReactMarkdown>
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
               {message.role === 'user' && (
                 <Avatar className="h-8 w-8">
@@ -208,8 +164,8 @@ const AIChat = () => {
               )}
             </div>
           ))}
-          {isPending && messages[messages.length - 1]?.content === '' && (
-             <div className="flex items-start gap-4">
+          {isPending && (
+            <div className="flex items-start gap-4">
               <Avatar className="h-8 w-8">
                 <AvatarImage src={logo} alt="AI Avatar" />
                 <AvatarFallback><Sparkles /></AvatarFallback>
@@ -233,7 +189,7 @@ const AIChat = () => {
             {error && (
               <Alert variant="destructive" className="m-4">
                 <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
+                <AlertDescription>{error.message}</AlertDescription>
               </Alert>
             )}
             <AIInputWithSearch

@@ -19,14 +19,15 @@ serve(async (req) => {
       throw new Error('Prompt is required');
     }
 
+    // Retrieve the secure API key from Supabase secrets
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY')
     if (!geminiApiKey) {
         throw new Error('API key for Gemini not found. Please check the GEMINI_API_KEY secret in your Supabase project settings.');
     }
 
-    // Use the streaming endpoint for Gemini
-    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key=${geminiApiKey}`
+    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`
 
+    // Call the Gemini API
     const geminiResponse = await fetch(geminiApiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -35,58 +36,32 @@ serve(async (req) => {
       }),
     })
 
-    if (!geminiResponse.ok || !geminiResponse.body) {
+    if (!geminiResponse.ok) {
       const errorBody = await geminiResponse.text();
-      throw new Error(`Gemini API error (${geminiResponse.status}): ${errorBody}`);
+      let errorMessage = `Gemini API error (${geminiResponse.status}): ${errorBody}`;
+      try {
+        const errorJson = JSON.parse(errorBody);
+        if (errorJson.error && errorJson.error.message) {
+          errorMessage = `Gemini API Error: ${errorJson.error.message}`;
+        }
+      } catch (e) {
+        // Not a JSON error, use the raw text
+      }
+      throw new Error(errorMessage);
     }
 
-    // Create a TransformStream to process the Gemini stream
-    const { readable, writable } = new TransformStream();
-    const writer = writable.getWriter();
-    const reader = geminiResponse.body.getReader();
-    const decoder = new TextDecoder();
+    const geminiData = await geminiResponse.json()
+    const aiResponse = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "No se pudo obtener una respuesta."
 
-    // Function to pump data from Gemini to our response stream
-    const pump = async () => {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-          writer.close();
-          return;
-        }
-        
-        const chunk = decoder.decode(value, { stream: true });
-        // Gemini streaming response often comes in chunks of JSON-like data
-        // We need to extract the text content from each part.
-        try {
-          // Each chunk might contain multiple JSON objects, so we split by a common delimiter
-          const parts = chunk.split('data: ');
-          for (const part of parts) {
-            if (part.trim()) {
-              const json = JSON.parse(part);
-              const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
-              if (text) {
-                await writer.write(new TextEncoder().encode(text));
-              }
-            }
-          }
-        } catch (e) {
-          // Ignore parsing errors for incomplete chunks
-        }
-      }
-    };
-
-    pump();
-
-    return new Response(readable, {
-      headers: { ...corsHeaders, 'Content-Type': 'text/plain; charset=utf-8' },
+    return new Response(JSON.stringify({ response: aiResponse }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
-
   } catch (error) {
     console.error('Error in Edge Function:', error.message)
+    // IMPORTANT: Always return 200 OK, but with an error payload for debugging
     return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
+      status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }
