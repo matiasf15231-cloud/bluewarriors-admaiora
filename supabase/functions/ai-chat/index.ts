@@ -16,19 +16,13 @@ serve(async (req) => {
   try {
     const { prompt } = await req.json()
     if (!prompt) {
-      return new Response(JSON.stringify({ error: 'Prompt is required' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      throw new Error('Prompt is required');
     }
 
     // Retrieve the secure API key from Supabase secrets
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY')
     if (!geminiApiKey) {
-        return new Response(JSON.stringify({ error: 'API key for Gemini not found. Please set the GEMINI_API_KEY secret in your Supabase project settings.' }), {
-            status: 500,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
+        throw new Error('API key for Gemini not found. Please check the GEMINI_API_KEY secret in your Supabase project settings.');
     }
 
     const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`
@@ -61,11 +55,13 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ response: aiResponse }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
     })
   } catch (error) {
-    console.error(error)
+    console.error('Error in Edge Function:', error.message)
+    // IMPORTANT: Always return 200 OK, but with an error payload for debugging
     return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
+      status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }

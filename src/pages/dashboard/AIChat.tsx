@@ -28,23 +28,16 @@ const AIChat = () => {
         body: { prompt },
       });
 
+      // This handles critical gateway/network errors
       if (error) {
-        // Try to parse the detailed error message from the function's response
-        let detailedError = error.message;
-        try {
-          const errorBody = JSON.parse(error.context.body);
-          if (errorBody.error) {
-            detailedError = errorBody.error;
-          }
-        } catch (e) {
-          // Parsing failed, stick with the default message
-        }
-        throw new Error(detailedError);
+        throw new Error(error.message);
       }
 
+      // This handles logical errors returned inside a successful (200) response
       if (data.error) {
         throw new Error(data.error);
       }
+      
       return data.response;
     },
     onSuccess: (response) => {
