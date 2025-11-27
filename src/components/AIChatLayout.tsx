@@ -10,7 +10,7 @@ const AIChatLayout = () => {
           <SidebarContent />
         </SidebarBody>
         <ChatHistorySidebar />
-        <main className="flex-1 flex flex-col">
+        <main className="flex-1 flex flex-col overflow-hidden">
           <Outlet />
         </main>
       </div>
