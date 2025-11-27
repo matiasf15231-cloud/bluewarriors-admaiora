@@ -67,13 +67,7 @@ const AIChat = () => {
 
   return (
     <div className="h-[calc(100vh-4rem)] flex flex-col">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground">Chat IA</h1>
-        <p className="text-muted-foreground">
-          Habla con nuestro asistente de IA para obtener ayuda e ideas.
-        </p>
-      </div>
-      <Card className="flex-1 flex flex-col">
+      <Card className="flex-1 flex flex-col bg-transparent border-none shadow-none">
         <CardContent className="flex-1 flex flex-col p-0">
           <ScrollArea className="flex-1 p-6" ref={scrollAreaRef}>
             <div className="space-y-6">
