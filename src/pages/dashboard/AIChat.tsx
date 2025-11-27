@@ -27,10 +27,9 @@ const AIChat = () => {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
+  const lastLoadedConversationId = useRef<string | undefined>();
 
-  // Fetch messages for the current conversation
-  const { isLoading: isLoadingMessages } = useQuery({
+  const { data: initialMessages, isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', conversationId],
     queryFn: async () => {
       if (!conversationId || !user) return [];
@@ -43,21 +42,18 @@ const AIChat = () => {
       return data as Message[];
     },
     enabled: !!conversationId && !!user,
-    onSuccess: (data) => {
-      if (!isPending) {
-        setMessages(data);
-      }
-    },
     refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
   });
 
-  // Effect to handle clearing messages for a new chat
   useEffect(() => {
-    if (!conversationId) {
+    if (conversationId && initialMessages && lastLoadedConversationId.current !== conversationId) {
+      setMessages(initialMessages);
+      lastLoadedConversationId.current = conversationId;
+    } else if (!conversationId) {
       setMessages([]);
+      lastLoadedConversationId.current = undefined;
     }
-  }, [conversationId]);
+  }, [conversationId, initialMessages]);
 
   const handleSendMessage = async (prompt: string) => {
     if (!prompt.trim() || isPending) return;
@@ -66,15 +62,14 @@ const AIChat = () => {
     setIsPending(true);
 
     const userMessage: Message = { role: 'user', content: prompt };
-    const assistantMessagePlaceholder: Message = { role: 'assistant', content: '' };
-    setMessages((prev) => [...prev, userMessage, assistantMessagePlaceholder]);
+    setMessages((prev) => [...prev, userMessage, { role: 'assistant', content: '' }]);
 
     let currentConversationId = conversationId;
-    let fullResponse = '';
+    let isNewConv = false;
 
     try {
-      // 1. Create conversation if it's a new chat
       if (!currentConversationId) {
+        isNewConv = true;
         const { data: convData, error: convError } = await supabase
           .from('conversations')
           .insert({ user_id: user!.id, title: prompt.substring(0, 40) })
@@ -82,17 +77,14 @@ const AIChat = () => {
           .single();
         if (convError) throw new Error(`Failed to create conversation: ${convError.message}`);
         currentConversationId = convData.id;
-        navigate(`/dashboard/ai-chat/${currentConversationId}`, { replace: true });
       }
 
-      // 2. Save user message
       await supabase.from('messages').insert({
         conversation_id: currentConversationId,
         user_id: user!.id,
         ...userMessage,
       });
 
-      // 3. Stream AI response
       const { data: sessionData } = await supabase.auth.getSession();
       const response = await fetch(`https://dfsqcviqgubwkuntwppt.supabase.co/functions/v1/ai-chat`, {
         method: 'POST',
@@ -110,6 +102,7 @@ const AIChat = () => {
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
+      let fullResponse = '';
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -117,14 +110,11 @@ const AIChat = () => {
         fullResponse += chunk;
         setMessages((prev) => {
           const newMessages = [...prev];
-          if (newMessages.length > 0) {
-            newMessages[newMessages.length - 1].content = fullResponse;
-          }
+          newMessages[newMessages.length - 1].content = fullResponse;
           return newMessages;
         });
       }
 
-      // 4. Save full assistant response
       await supabase.from('messages').insert({
         conversation_id: currentConversationId,
         user_id: user!.id,
@@ -133,6 +123,11 @@ const AIChat = () => {
       });
 
       queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] });
+      
+      if (isNewConv) {
+        navigate(`/dashboard/ai-chat/${currentConversationId}`, { replace: true });
+        lastLoadedConversationId.current = currentConversationId;
+      }
 
     } catch (err: any) {
       const errorMessage = err.message || "An unknown error occurred.";
@@ -154,7 +149,7 @@ const AIChat = () => {
   }, [messages]);
 
   const renderChatContent = () => {
-    if (isLoadingMessages) {
+    if (isLoadingMessages && messages.length === 0) {
       return (
         <div className="flex-1 flex justify-center items-center">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -164,8 +159,12 @@ const AIChat = () => {
 
     if (messages.length === 0 && !isPending) {
       return (
-        <div className="flex-1 flex flex-col items-center justify-center text-center">
+        <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
+          <img src={logo} alt="BlueWarriors Logo" className="w-24 h-24 mb-4" />
           <h2 className="text-2xl font-semibold text-foreground">¿En qué puedo ayudarte hoy?</h2>
+          <p className="text-muted-foreground mt-2 max-w-md">
+            Puedes preguntarme sobre el equipo, nuestros robots, o cualquier otra cosa. ¡Estoy aquí para ayudar!
+          </p>
         </div>
       );
     }
