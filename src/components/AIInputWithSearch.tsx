@@ -1,6 +1,6 @@
 "use client";
 
-import { Globe, Paperclip, Send } from "lucide-react";
+import { Globe, Send } from "lucide-react";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,7 +13,6 @@ interface AIInputWithSearchProps {
   minHeight?: number;
   maxHeight?: number;
   onSubmit?: (value: string, withSearch: boolean) => void;
-  onFileSelect?: (file: File) => void;
   className?: string;
   disabled?: boolean;
 }
@@ -24,7 +23,6 @@ export function AIInputWithSearch({
   minHeight = 48,
   maxHeight = 164,
   onSubmit,
-  onFileSelect,
   className,
   disabled = false,
 }: AIInputWithSearchProps) {
@@ -40,13 +38,6 @@ export function AIInputWithSearch({
       onSubmit?.(value, showSearch);
       setValue("");
       adjustHeight(true);
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      onFileSelect?.(file);
     }
   };
 
@@ -80,15 +71,6 @@ export function AIInputWithSearch({
 
           <div className="h-12 bg-black/5 dark:bg-white/5 rounded-b-xl">
             <div className="absolute left-3 bottom-3 flex items-center gap-2">
-              <label className="cursor-pointer rounded-lg p-2 bg-black/5 dark:bg-white/5">
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  onChange={handleFileChange}
-                  disabled={disabled}
-                />
-                <Paperclip className="w-4 h-4 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors" />
-              </label>
               <button
                 type="button"
                 onClick={() => setShowSearch(!showSearch)}
