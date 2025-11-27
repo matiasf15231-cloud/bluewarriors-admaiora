@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import React, { useState, createContext, useContext } from "react";
-import { Menu, X, Home, FileText, LogOut, User, Undo2 } from "lucide-react";
+import { Menu, X, Home, FileText, LogOut, User, Undo2, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -202,6 +202,11 @@ export const SidebarContent = () => {
             label: "Documentos",
             href: "/dashboard/documents",
             icon: <FileText className="h-5 w-5" />,
+        },
+        {
+            label: "IA",
+            href: "/dashboard/ia",
+            icon: <Sparkles className="h-5 w-5" />,
         },
     ];
 

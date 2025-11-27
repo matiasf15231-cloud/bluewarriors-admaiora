@@ -14,6 +14,7 @@ import DashboardLayout from "./components/DashboardLayout";
 import DashboardHome from "./pages/dashboard/Index";
 import Documents from "./pages/dashboard/Documents";
 import DocumentEditor from "./pages/dashboard/DocumentEditor";
+import AiChat from "./pages/dashboard/AiChat";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const App = () => (
               >
                 <Route index element={<DashboardHome />} />
                 <Route path="documents" element={<Documents />} />
+                <Route path="ia" element={<AiChat />} />
               </Route>
 
               {/* Document editor route (full-screen) */}
