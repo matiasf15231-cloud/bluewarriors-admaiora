@@ -73,7 +73,7 @@ const Navbar = () => {
                 <Button asChild size="sm" className="hover:scale-105 transition-all duration-300">
                   <Link to="/dashboard">
                     <LayoutDashboard className="h-4 w-4 mr-2" />
-                    Dashboard
+                    Panel
                   </Link>
                 </Button>
                 <Button onClick={handleLogout} variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 hover:text-destructive hover:scale-105 transition-all duration-300">
@@ -132,7 +132,7 @@ const Navbar = () => {
                 <Button asChild className="w-full justify-start">
                   <Link to="/dashboard">
                     <LayoutDashboard className="h-5 w-5 mr-3" />
-                    Dashboard
+                    Panel
                   </Link>
                 </Button>
                 <Button onClick={handleLogout} variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10">
