@@ -41,10 +41,12 @@ const DocumentEditor = () => {
   useEffect(() => {
     if (documentData) {
       setTitle(documentData.title || '');
-      if (documentData.content && typeof (documentData.content as any).markdown === 'string') {
-        setContent((documentData.content as any).markdown);
-      } else if (typeof documentData.content === 'string') { // For backward compatibility
-        setContent(documentData.content);
+      const docContent = documentData.content;
+      // Safely handle content to prevent crashes on null or unexpected formats
+      if (docContent && typeof docContent === 'object' && 'markdown' in docContent) {
+        setContent(String((docContent as any).markdown || ''));
+      } else if (typeof docContent === 'string') { // For backward compatibility
+        setContent(docContent);
       } else {
         setContent('');
       }
