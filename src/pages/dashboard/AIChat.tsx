@@ -30,7 +30,7 @@ const AIChat = () => {
   const { toast } = useToast();
 
   // Fetch messages for the current conversation
-  const { data: initialMessages, isLoading: isLoadingMessages } = useQuery({
+  const { isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', conversationId],
     queryFn: async () => {
       if (!conversationId || !user) return [];
@@ -43,19 +43,21 @@ const AIChat = () => {
       return data as Message[];
     },
     enabled: !!conversationId && !!user,
+    onSuccess: (data) => {
+      if (!isPending) {
+        setMessages(data);
+      }
+    },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
+  // Effect to handle clearing messages for a new chat
   useEffect(() => {
-    // Do not overwrite local state if a message is being streamed.
-    if (isPending) return;
-
-    if (initialMessages) {
-      setMessages(initialMessages);
-    } else if (!conversationId) {
-      // Clear messages for a new chat session.
+    if (!conversationId) {
       setMessages([]);
     }
-  }, [initialMessages, conversationId, isPending]);
+  }, [conversationId]);
 
   const handleSendMessage = async (prompt: string) => {
     if (!prompt.trim() || isPending) return;
@@ -115,7 +117,9 @@ const AIChat = () => {
         fullResponse += chunk;
         setMessages((prev) => {
           const newMessages = [...prev];
-          newMessages[newMessages.length - 1].content = fullResponse;
+          if (newMessages.length > 0) {
+            newMessages[newMessages.length - 1].content = fullResponse;
+          }
           return newMessages;
         });
       }
@@ -134,7 +138,6 @@ const AIChat = () => {
       const errorMessage = err.message || "An unknown error occurred.";
       setError(errorMessage);
       toast({ title: "Error", description: errorMessage, variant: "destructive" });
-      // Remove the placeholder and user message on error
       setMessages(prev => prev.slice(0, -2));
     } finally {
       setIsPending(false);
@@ -191,7 +194,7 @@ const AIChat = () => {
               )}
             </div>
           ))}
-          {isPending && messages[messages.length - 1]?.role === 'assistant' && messages[messages.length - 1]?.content === '' && (
+          {isPending && messages.length > 0 && messages[messages.length - 1]?.role === 'assistant' && messages[messages.length - 1]?.content === '' && (
              <div className="flex items-start gap-4">
               <Avatar className="h-8 w-8">
                 <AvatarImage src={logo} alt="AI Avatar" />
