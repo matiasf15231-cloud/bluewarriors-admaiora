@@ -11,8 +11,6 @@ import logo from '@/assets/bluewarriors-logo.png';
 import { AIInputWithSearch } from '@/components/AIInputWithSearch';
 import { useToast } from '@/hooks/use-toast';
 import { useParams, useNavigate } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -156,16 +154,7 @@ const AIChat = () => {
                 </Avatar>
               )}
               <div className={`max-w-2xl p-3 rounded-lg ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
-                {message.role === 'user' ? (
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                ) : (
-                  <ReactMarkdown
-                    className="prose prose-sm dark:prose-invert max-w-none"
-                    remarkPlugins={[remarkGfm]}
-                  >
-                    {message.content}
-                  </ReactMarkdown>
-                )}
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
               {message.role === 'user' && (
                 <Avatar className="h-8 w-8">
