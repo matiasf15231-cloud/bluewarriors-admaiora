@@ -46,12 +46,16 @@ const AIChat = () => {
   });
 
   useEffect(() => {
+    // Do not overwrite local state if a message is being streamed.
+    if (isPending) return;
+
     if (initialMessages) {
       setMessages(initialMessages);
     } else if (!conversationId) {
+      // Clear messages for a new chat session.
       setMessages([]);
     }
-  }, [initialMessages, conversationId]);
+  }, [initialMessages, conversationId, isPending]);
 
   const handleSendMessage = async (prompt: string) => {
     if (!prompt.trim() || isPending) return;
@@ -130,8 +134,8 @@ const AIChat = () => {
       const errorMessage = err.message || "An unknown error occurred.";
       setError(errorMessage);
       toast({ title: "Error", description: errorMessage, variant: "destructive" });
-      // Remove the placeholder message on error
-      setMessages(prev => prev.slice(0, -1));
+      // Remove the placeholder and user message on error
+      setMessages(prev => prev.slice(0, -2));
     } finally {
       setIsPending(false);
     }
