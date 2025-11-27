@@ -65,6 +65,9 @@ const AIChat = () => {
       return count ?? 0;
     },
     enabled: !!user,
+    staleTime: 0, // Always consider data stale to refetch in background
+    refetchInterval: 60000, // Refetch every 60 seconds
+    refetchOnWindowFocus: true, // Refetch when window is focused
   });
 
   useEffect(() => {
