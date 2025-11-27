@@ -109,9 +109,10 @@ const AIChat = () => {
           throw new Error('Has alcanzado el límite de 10 chats. Elimina uno para crear uno nuevo.');
         }
 
+        const newTitle = prompt.split(' ').slice(0, 2).join(' ');
         const { data: convData, error: convError } = await supabase
           .from('conversations')
-          .insert({ user_id: user!.id, title: prompt.substring(0, 40) })
+          .insert({ user_id: user!.id, title: newTitle })
           .select('id')
           .single();
         if (convError) throw new Error(`Failed to create conversation: ${convError.message}`);
