@@ -25,7 +25,7 @@ serve(async (req) => {
     // Retrieve the secure API key from Supabase secrets
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY')
     if (!geminiApiKey) {
-        return new Response(JSON.stringify({ error: 'Gemini API key not set in Supabase secrets' }), {
+        return new Response(JSON.stringify({ error: 'API key for Gemini not found. Please set the GEMINI_API_KEY secret in your Supabase project settings.' }), {
             status: 500,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -44,7 +44,16 @@ serve(async (req) => {
 
     if (!geminiResponse.ok) {
       const errorBody = await geminiResponse.text();
-      throw new Error(`Gemini API error: ${geminiResponse.status} ${errorBody}`);
+      let errorMessage = `Gemini API error (${geminiResponse.status}): ${errorBody}`;
+      try {
+        const errorJson = JSON.parse(errorBody);
+        if (errorJson.error && errorJson.error.message) {
+          errorMessage = `Gemini API Error: ${errorJson.error.message}`;
+        }
+      } catch (e) {
+        // Not a JSON error, use the raw text
+      }
+      throw new Error(errorMessage);
     }
 
     const geminiData = await geminiResponse.json()
