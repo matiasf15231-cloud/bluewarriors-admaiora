@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { CopyButton } from '@/components/CopyButton';
+import Typewriter from '@/components/Typewriter';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -230,7 +231,11 @@ const AIChat = () => {
                     </Avatar>
                     <div className="group relative max-w-2xl rounded-lg bg-secondary">
                       <div className="prose prose-sm dark:prose-invert max-w-none p-3 pr-10">
-                        <ReactMarkdown>{message.content}</ReactMarkdown>
+                        {index === messages.length - 1 && !isPending ? (
+                          <Typewriter text={message.content} />
+                        ) : (
+                          <ReactMarkdown>{message.content}</ReactMarkdown>
+                        )}
                       </div>
                       <CopyButton
                         onClick={() => handleCopy(message.content)}
