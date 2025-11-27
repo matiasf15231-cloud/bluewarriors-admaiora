@@ -42,20 +42,66 @@ const AIChat = () => {
     enabled: !!conversationId && !!user,
   });
 
+  // Query for daily message count
+  const { data: dailyMessageCount, isLoading: isLoadingCount } = useQuery({
+    queryKey: ['dailyMessageCount', user?.id],
+    queryFn: async () => {
+      if (!user) return 0;
+      const today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
+      const { count, error } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('role', 'user')
+        .gte('created_at', today.toISOString());
+      if (error) {
+        console.error("Error fetching daily message count:", error);
+        return 0;
+      }
+      return count ?? 0;
+    },
+    enabled: !!user,
+  });
+
   useEffect(() => {
     if (initialMessages) {
       setMessages(initialMessages);
     } else if (!conversationId) {
-      setMessages([]); // Clear messages for a new chat
+      setMessages([]);
     }
   }, [initialMessages, conversationId]);
 
   const { mutate: sendMessage, isPending, error, reset } = useMutation({
     mutationFn: async ({ prompt, currentConversationId }: { prompt: string; currentConversationId: string | undefined }) => {
+      // Re-check limits inside mutation for accuracy
+      const today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
+      const { count: messageCount, error: messageError } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user!.id)
+        .eq('role', 'user')
+        .gte('created_at', today.toISOString());
+
+      if (messageError) throw new Error(`Error al verificar el límite de mensajes: ${messageError.message}`);
+      if (messageCount !== null && messageCount >= 20) {
+        throw new Error('Has alcanzado el límite de 20 mensajes por día.');
+      }
+
       let convId = currentConversationId;
 
-      // 1. If it's a new chat, create the conversation first
       if (!convId) {
+        const { count: convoCount, error: convoError } = await supabase
+          .from('conversations')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user!.id);
+        
+        if (convoError) throw new Error(`Error al verificar el límite de chats: ${convoError.message}`);
+        if (convoCount !== null && convoCount >= 10) {
+          throw new Error('Has alcanzado el límite de 10 chats. Elimina uno para crear uno nuevo.');
+        }
+
         const { data: convData, error: convError } = await supabase
           .from('conversations')
           .insert({ user_id: user!.id, title: prompt.substring(0, 40) })
@@ -65,7 +111,6 @@ const AIChat = () => {
         convId = convData.id;
       }
 
-      // 2. Save user message
       const userMessage: Message = { role: 'user', content: prompt };
       const { error: userMsgError } = await supabase.from('messages').insert({
         conversation_id: convId,
@@ -74,7 +119,6 @@ const AIChat = () => {
       });
       if (userMsgError) throw new Error(`Failed to save user message: ${userMsgError.message}`);
 
-      // 3. Call the AI function
       const { data: aiFuncData, error: aiFuncError } = await supabase.functions.invoke('ai-chat', {
         body: { prompt },
       });
@@ -84,7 +128,6 @@ const AIChat = () => {
       const aiResponse = aiFuncData.response;
       const assistantMessage: Message = { role: 'assistant', content: aiResponse };
 
-      // 4. Save assistant message
       const { error: assistantMsgError } = await supabase.from('messages').insert({
         conversation_id: convId,
         user_id: user!.id,
@@ -97,6 +140,7 @@ const AIChat = () => {
     onSuccess: ({ newConversationId, assistantMessage }) => {
       setMessages((prev) => [...prev, assistantMessage]);
       queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['dailyMessageCount', user?.id] });
       
       if (!conversationId) {
         navigate(`/dashboard/ai-chat/${newConversationId}`, { replace: true });
@@ -123,6 +167,10 @@ const AIChat = () => {
       }
     }
   }, [messages, isPending]);
+
+  const messagesRemaining = 20 - (dailyMessageCount ?? 0);
+  const hasReachedDailyLimit = messagesRemaining <= 0;
+  const isInputDisabled = isPending || hasReachedDailyLimit;
 
   return (
     <div className="h-full flex flex-col">
@@ -178,18 +226,27 @@ const AIChat = () => {
           )}
         </div>
       </ScrollArea>
-      <div className="border-t">
+      <div className="border-t p-4">
         {error && (
-          <Alert variant="destructive" className="m-4">
+          <Alert variant="destructive" className="mb-4">
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>{error.message}</AlertDescription>
           </Alert>
         )}
         <AIInputWithSearch
           onSubmit={(prompt) => handleSendMessage(prompt)}
-          placeholder="Habla con el asistente de IA..."
-          disabled={isPending}
+          placeholder={hasReachedDailyLimit ? "Límite diario de mensajes alcanzado" : "Habla con el asistente de IA..."}
+          disabled={isInputDisabled}
         />
+        <div className="text-center text-xs text-muted-foreground mt-2">
+          {isLoadingCount ? (
+            <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+          ) : (
+            <p>
+              {messagesRemaining > 0 ? `Te quedan ${messagesRemaining} mensajes hoy.` : "Has agotado tus mensajes de hoy."}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

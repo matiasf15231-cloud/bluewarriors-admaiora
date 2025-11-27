@@ -52,6 +52,8 @@ const ChatHistorySidebar = () => {
     enabled: !!user,
   });
 
+  const hasReachedConvoLimit = conversations && conversations.length >= 10;
+
   const deleteMutation = useMutation({
     mutationFn: async (convoId: string) => {
       const { error } = await supabase.from('conversations').delete().eq('id', convoId);
@@ -81,13 +83,18 @@ const ChatHistorySidebar = () => {
 
   return (
     <div className="h-full bg-card flex flex-col w-64 border-r">
-      <div className="p-4">
-        <Button asChild className="w-full">
+      <div className="p-4 border-b">
+        <Button asChild className="w-full" disabled={hasReachedConvoLimit}>
           <Link to="/dashboard/ai-chat">
             <PlusCircle className="h-4 w-4 mr-2" />
             Nuevo Chat
           </Link>
         </Button>
+        {hasReachedConvoLimit && (
+            <p className="text-xs text-destructive text-center mt-2">
+                Límite de 10 chats alcanzado.
+            </p>
+        )}
       </div>
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-2">
