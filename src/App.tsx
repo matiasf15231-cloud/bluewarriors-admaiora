@@ -15,6 +15,7 @@ import DashboardHome from "./pages/dashboard/Index";
 import Documents from "./pages/dashboard/Documents";
 import DocumentEditor from "./pages/dashboard/DocumentEditor";
 import AIChat from "./pages/dashboard/AIChat";
+import AIChatLayout from "./components/AIChatLayout";
 
 const queryClient = new QueryClient();
 
@@ -32,7 +33,7 @@ const App = () => (
               </Route>
               <Route path="/login" element={<Login />} />
               
-              {/* Dashboard routes with sidebar */}
+              {/* Dashboard routes with standard sidebar */}
               <Route
                 path="/dashboard"
                 element={
@@ -43,7 +44,19 @@ const App = () => (
               >
                 <Route index element={<DashboardHome />} />
                 <Route path="documents" element={<Documents />} />
-                <Route path="ai-chat" element={<AIChat />} />
+              </Route>
+
+              {/* AI Chat routes with dedicated layout */}
+              <Route
+                path="/dashboard/ai-chat"
+                element={
+                  <ProtectedRoute>
+                    <AIChatLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<AIChat />} />
+                <Route path=":conversationId" element={<AIChat />} />
               </Route>
 
               {/* Document editor route (full-screen) */}

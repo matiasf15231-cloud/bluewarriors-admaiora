@@ -1,14 +1,16 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar, SidebarBody, SidebarContent } from './DashboardSidebar';
+import ChatHistorySidebar from './ChatHistorySidebar';
 
-const DashboardLayout = () => {
+const AIChatLayout = () => {
   return (
     <Sidebar>
       <div className="flex h-screen bg-background">
         <SidebarBody>
           <SidebarContent />
         </SidebarBody>
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <ChatHistorySidebar />
+        <main className="flex-1 flex flex-col">
           <Outlet />
         </main>
       </div>
@@ -16,4 +18,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout;
+export default AIChatLayout;
