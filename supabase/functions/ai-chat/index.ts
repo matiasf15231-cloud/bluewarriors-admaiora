@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, history } = await req.json() // Expect history
+    const { prompt, history } = await req.json()
     if (!prompt) {
       throw new Error('Prompt is required');
     }
@@ -33,22 +33,23 @@ serve(async (req) => {
       parts: [{ text: message.content }]
     }));
 
-    // System instruction to guide the AI's response length
-    const systemInstruction = {
-      role: 'user',
-      parts: [{ text: "Por favor, proporciona respuestas de longitud media (alrededor de 3-5 frases). Sé conciso y ve al grano. Evita respuestas excesivamente largas." }]
-    };
-    const systemResponse = {
-      role: 'model',
-      parts: [{ text: "Entendido. Seré conciso y mis respuestas serán de longitud media." }]
-    };
+    // Sanitize history to ensure roles alternate correctly, preventing API errors
+    const alternatingHistory = mappedHistory.reduce((acc, current) => {
+        if (acc.length === 0 || acc[acc.length - 1].role !== current.role) {
+            acc.push(current);
+        }
+        return acc;
+    }, []);
 
     const contents = [
-      systemInstruction,
-      systemResponse,
-      ...mappedHistory,
+      ...alternatingHistory,
       { role: 'user', parts: [{ text: prompt }] }
     ];
+
+    // Use the dedicated systemInstruction field for better guidance
+    const systemInstruction = {
+      parts: [{ text: "Eres un asistente amigable y servicial para un equipo de robótica de FIRST LEGO League llamado BlueWarriors. Proporciona respuestas de longitud media (alrededor de 3-5 frases). Sé conciso y ve al grano. Evita respuestas excesivamente largas." }]
+    };
 
     // Configuration to set a hard limit on the response size
     const generationConfig = {
@@ -61,7 +62,8 @@ serve(async (req) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: contents,
-        generationConfig: generationConfig, // Add generation config here
+        systemInstruction: systemInstruction,
+        generationConfig: generationConfig,
       }),
     })
 
