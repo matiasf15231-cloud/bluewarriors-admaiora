@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt } = await req.json()
+    const { prompt, history } = await req.json() // Expect history
     if (!prompt) {
       throw new Error('Prompt is required');
     }
@@ -27,12 +27,23 @@ serve(async (req) => {
 
     const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`
 
+    // Map roles from 'assistant' to 'model' for the Gemini API
+    const mappedHistory = (history || []).map((message: { role: string; content: string }) => ({
+      role: message.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: message.content }]
+    }));
+
+    const contents = [
+      ...mappedHistory,
+      { role: 'user', parts: [{ text: prompt }] }
+    ];
+
     // Call the Gemini API
     const geminiResponse = await fetch(geminiApiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
+        contents: contents, // Send the full conversation history
       }),
     })
 

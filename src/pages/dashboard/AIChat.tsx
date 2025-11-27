@@ -73,7 +73,7 @@ const AIChat = () => {
   }, [initialMessages, conversationId]);
 
   const { mutate: sendMessage, isPending, error, reset } = useMutation({
-    mutationFn: async ({ prompt, currentConversationId }: { prompt: string; currentConversationId: string | undefined }) => {
+    mutationFn: async ({ prompt, currentConversationId, history }: { prompt: string; currentConversationId: string | undefined; history: Message[] }) => {
       // Re-check limits inside mutation for accuracy
       const today = new Date();
       today.setUTCHours(0, 0, 0, 0);
@@ -120,7 +120,7 @@ const AIChat = () => {
       if (userMsgError) throw new Error(`Failed to save user message: ${userMsgError.message}`);
 
       const { data: aiFuncData, error: aiFuncError } = await supabase.functions.invoke('ai-chat', {
-        body: { prompt },
+        body: { prompt, history },
       });
       
       if (aiFuncError) {
@@ -161,8 +161,9 @@ const AIChat = () => {
     if (!prompt.trim()) return;
     reset();
     const userMessage: Message = { role: 'user', content: prompt };
+    const currentHistory = [...messages];
     setMessages((prev) => [...prev, userMessage]);
-    sendMessage({ prompt, currentConversationId: conversationId });
+    sendMessage({ prompt, currentConversationId: conversationId, history: currentHistory });
   };
 
   useEffect(() => {
