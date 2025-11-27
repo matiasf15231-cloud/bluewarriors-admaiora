@@ -25,7 +25,7 @@ serve(async (req) => {
         throw new Error('API key for Gemini not found. Please check the GEMINI_API_KEY secret in your Supabase project settings.');
     }
 
-    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`
+    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`
 
     // Map roles from 'assistant' to 'model' for the Gemini API
     const mappedHistory = (history || []).map((message: { role: string; content: string }) => ({
@@ -33,17 +33,35 @@ serve(async (req) => {
       parts: [{ text: message.content }]
     }));
 
+    // System instruction to guide the AI's response length
+    const systemInstruction = {
+      role: 'user',
+      parts: [{ text: "Por favor, proporciona respuestas de longitud media (alrededor de 3-5 frases). Sé conciso y ve al grano. Evita respuestas excesivamente largas." }]
+    };
+    const systemResponse = {
+      role: 'model',
+      parts: [{ text: "Entendido. Seré conciso y mis respuestas serán de longitud media." }]
+    };
+
     const contents = [
+      systemInstruction,
+      systemResponse,
       ...mappedHistory,
       { role: 'user', parts: [{ text: prompt }] }
     ];
+
+    // Configuration to set a hard limit on the response size
+    const generationConfig = {
+      maxOutputTokens: 300,
+    };
 
     // Call the Gemini API
     const geminiResponse = await fetch(geminiApiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: contents, // Send the full conversation history
+        contents: contents,
+        generationConfig: generationConfig, // Add generation config here
       }),
     })
 
