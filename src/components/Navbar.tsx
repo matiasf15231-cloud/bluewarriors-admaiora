@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Trophy, Users, Bot, Medal, Camera, LogIn, LayoutDashboard, LogOut } from 'lucide-react';
+import { Menu, X, Trophy, Users, Bot, Medal, Camera, LogIn, LayoutDashboard, LogOut, BrainCircuit } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,6 +18,7 @@ const Navbar = () => {
     { name: 'Robots & Proyectos', href: '#robots', icon: Bot },
     { name: 'Logros', href: '#logros', icon: Medal },
     { name: 'Galería', href: '#galeria', icon: Camera },
+    { name: 'IA', href: '#ia', icon: BrainCircuit },
   ];
 
   const scrollToSection = (href: string) => {
