@@ -26,48 +26,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getSessionAndProfile = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user ?? null);
+    // Centralized function to fetch user profile data
+    const fetchUserAndProfile = async (currentSession: Session | null) => {
+      setSession(currentSession);
+      const currentUser = currentSession?.user ?? null;
+      setUser(currentUser);
+      setProfile(null); // Reset profile before fetching
 
-      if (session?.user) {
-        const { data: profileData, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        if (error) {
-          console.error("Error fetching profile:", error.message);
-          setProfile(null);
-        } else {
-          setProfile(profileData);
+      if (currentUser) {
+        try {
+          const { data: profileData, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', currentUser.id)
+            .single();
+          
+          if (error) {
+            // This can happen if the profile is not yet created, which is not a critical failure.
+            console.error("Could not fetch profile:", error.message);
+          } else {
+            setProfile(profileData);
+          }
+        } catch (e) {
+          console.error("A critical error occurred while fetching the profile:", e);
         }
       }
-      setLoading(false);
     };
 
-    getSessionAndProfile();
+    // Handle initial session load
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      fetchUserAndProfile(session).finally(() => {
+        setLoading(false);
+      });
+    });
 
+    // Listen for changes in authentication state
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-
-      if (session?.user) {
-        const { data: profileData, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        if (error) {
-          console.error("Error fetching profile on auth change:", error.message);
-          setProfile(null);
-        } else {
-          setProfile(profileData);
-        }
-      } else {
-        setProfile(null);
-      }
+      await fetchUserAndProfile(session);
     });
 
     return () => {
