@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,6 +11,7 @@ import logo from '@/assets/bluewarriors-logo.png';
 import { AIInputWithSearch } from '@/components/AIInputWithSearch';
 import { useToast } from '@/hooks/use-toast';
 import { useParams, useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -23,6 +24,8 @@ const AIChat = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -46,74 +49,92 @@ const AIChat = () => {
     if (initialMessages) {
       setMessages(initialMessages);
     } else if (!conversationId) {
-      setMessages([]); // Clear messages for a new chat
+      setMessages([]);
     }
   }, [initialMessages, conversationId]);
 
-  const { mutate: sendMessage, isPending, error, reset } = useMutation({
-    mutationFn: async ({ prompt, currentConversationId }: { prompt: string; currentConversationId: string | undefined }) => {
-      let convId = currentConversationId;
+  const handleSendMessage = async (prompt: string) => {
+    if (!prompt.trim() || isPending) return;
 
-      // 1. If it's a new chat, create the conversation first
-      if (!convId) {
+    setError(null);
+    setIsPending(true);
+
+    const userMessage: Message = { role: 'user', content: prompt };
+    const assistantMessagePlaceholder: Message = { role: 'assistant', content: '' };
+    setMessages((prev) => [...prev, userMessage, assistantMessagePlaceholder]);
+
+    let currentConversationId = conversationId;
+    let fullResponse = '';
+
+    try {
+      // 1. Create conversation if it's a new chat
+      if (!currentConversationId) {
         const { data: convData, error: convError } = await supabase
           .from('conversations')
           .insert({ user_id: user!.id, title: prompt.substring(0, 40) })
           .select('id')
           .single();
         if (convError) throw new Error(`Failed to create conversation: ${convError.message}`);
-        convId = convData.id;
+        currentConversationId = convData.id;
+        navigate(`/dashboard/ai-chat/${currentConversationId}`, { replace: true });
       }
 
       // 2. Save user message
-      const userMessage: Message = { role: 'user', content: prompt };
-      const { error: userMsgError } = await supabase.from('messages').insert({
-        conversation_id: convId,
+      await supabase.from('messages').insert({
+        conversation_id: currentConversationId,
         user_id: user!.id,
         ...userMessage,
       });
-      if (userMsgError) throw new Error(`Failed to save user message: ${userMsgError.message}`);
 
-      // 3. Call the AI function
-      const { data: aiFuncData, error: aiFuncError } = await supabase.functions.invoke('ai-chat', {
-        body: { prompt },
+      // 3. Stream AI response
+      const { data: sessionData } = await supabase.auth.getSession();
+      const response = await fetch(`https://dfsqcviqgubwkuntwppt.supabase.co/functions/v1/ai-chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionData.session?.access_token}`,
+        },
+        body: JSON.stringify({ prompt }),
       });
-      if (aiFuncError) throw new Error(`AI function error: ${aiFuncError.message}`);
-      if (aiFuncData.error) throw new Error(`AI logic error: ${aiFuncData.error}`);
-      
-      const aiResponse = aiFuncData.response;
-      const assistantMessage: Message = { role: 'assistant', content: aiResponse };
 
-      // 4. Save assistant message
-      const { error: assistantMsgError } = await supabase.from('messages').insert({
-        conversation_id: convId,
-        user_id: user!.id,
-        ...assistantMessage,
-      });
-      if (assistantMsgError) throw new Error(`Failed to save assistant message: ${assistantMsgError.message}`);
-
-      return { newConversationId: convId, assistantMessage };
-    },
-    onSuccess: ({ newConversationId, assistantMessage }) => {
-      setMessages((prev) => [...prev, assistantMessage]);
-      queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] });
-      
-      // If it was a new chat, navigate to the new conversation URL
-      if (!conversationId) {
-        navigate(`/dashboard/ai-chat/${newConversationId}`, { replace: true });
+      if (!response.ok || !response.body) {
+        const errorText = await response.text();
+        throw new Error(`AI function error: ${errorText}`);
       }
-    },
-    onError: (err) => {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
-    }
-  });
 
-  const handleSendMessage = (prompt: string) => {
-    if (!prompt.trim()) return;
-    reset();
-    const userMessage: Message = { role: 'user', content: prompt };
-    setMessages((prev) => [...prev, userMessage]);
-    sendMessage({ prompt, currentConversationId: conversationId });
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        fullResponse += chunk;
+        setMessages((prev) => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1].content = fullResponse;
+          return newMessages;
+        });
+      }
+
+      // 4. Save full assistant response
+      await supabase.from('messages').insert({
+        conversation_id: currentConversationId,
+        user_id: user!.id,
+        role: 'assistant',
+        content: fullResponse,
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] });
+
+    } catch (err: any) {
+      const errorMessage = err.message || "An unknown error occurred.";
+      setError(errorMessage);
+      toast({ title: "Error", description: errorMessage, variant: "destructive" });
+      // Remove the placeholder message on error
+      setMessages(prev => prev.slice(0, -1));
+    } finally {
+      setIsPending(false);
+    }
   };
 
   useEffect(() => {
@@ -154,7 +175,9 @@ const AIChat = () => {
                 </Avatar>
               )}
               <div className={`max-w-2xl p-3 rounded-lg ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                <ReactMarkdown className="prose dark:prose-invert max-w-none prose-p:m-0 prose-strong:text-inherit">
+                  {message.content}
+                </ReactMarkdown>
               </div>
               {message.role === 'user' && (
                 <Avatar className="h-8 w-8">
@@ -164,8 +187,8 @@ const AIChat = () => {
               )}
             </div>
           ))}
-          {isPending && (
-            <div className="flex items-start gap-4">
+          {isPending && messages[messages.length - 1]?.role === 'assistant' && messages[messages.length - 1]?.content === '' && (
+             <div className="flex items-start gap-4">
               <Avatar className="h-8 w-8">
                 <AvatarImage src={logo} alt="AI Avatar" />
                 <AvatarFallback><Sparkles /></AvatarFallback>
@@ -189,7 +212,7 @@ const AIChat = () => {
             {error && (
               <Alert variant="destructive" className="m-4">
                 <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{error.message}</AlertDescription>
+                <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
             <AIInputWithSearch
