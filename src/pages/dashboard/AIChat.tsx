@@ -25,14 +25,13 @@ const AIChat = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // State for messages actively being streamed/interacted with
-  const [transientMessages, setTransientMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const lastLoadedConversationId = useRef<string | undefined>();
 
-  // Fetch persisted messages from the database
-  const { data: persistedMessages, isLoading: isLoadingMessages } = useQuery({
+  const { data: initialMessages, isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', conversationId],
     queryFn: async (): Promise<Message[]> => {
       if (!conversationId || !user) return [];
@@ -48,8 +47,18 @@ const AIChat = () => {
     refetchOnWindowFocus: false,
   });
 
-  // Combine persisted and transient messages for display
-  const displayedMessages = [...(persistedMessages || []), ...transientMessages];
+  useEffect(() => {
+    // If the conversationId from URL changes, and it's different from the one we last loaded,
+    // and we have data for it, then update our local state.
+    if (conversationId && initialMessages && lastLoadedConversationId.current !== conversationId) {
+      setMessages(initialMessages);
+      lastLoadedConversationId.current = conversationId;
+    } else if (!conversationId) {
+      // If there's no conversationId in the URL, it's a new chat. Clear messages.
+      setMessages([]);
+      lastLoadedConversationId.current = undefined;
+    }
+  }, [conversationId, initialMessages]);
 
   const handleSendMessage = async (prompt: string) => {
     if (!prompt.trim() || isPending) return;
@@ -58,14 +67,16 @@ const AIChat = () => {
     setIsPending(true);
 
     const userMessage: Message = { role: 'user', content: prompt };
-    const assistantPlaceholder: Message = { role: 'assistant', content: '' };
-    setTransientMessages([userMessage, assistantPlaceholder]);
+    // Immediately update local state to show user message and a placeholder for the AI response.
+    setMessages((prev) => [...prev, userMessage, { role: 'assistant', content: '' }]);
 
     let currentConversationId = conversationId;
+    let isNewConversation = false;
 
     try {
       // 1. Create conversation if it's a new chat
       if (!currentConversationId) {
+        isNewConversation = true;
         const { data: convData, error: convError } = await supabase
           .from('conversations')
           .insert({ user_id: user!.id, title: prompt.substring(0, 40) })
@@ -73,9 +84,6 @@ const AIChat = () => {
           .single();
         if (convError) throw new Error(`Failed to create conversation: ${convError.message}`);
         currentConversationId = convData.id;
-        // Navigate to the new conversation URL. The component will re-render,
-        // but the transient state will persist until the operation is complete.
-        navigate(`/dashboard/ai-chat/${currentConversationId}`, { replace: true });
       }
 
       // 2. Save user message
@@ -109,7 +117,12 @@ const AIChat = () => {
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
         fullResponse += chunk;
-        setTransientMessages([userMessage, { role: 'assistant', content: fullResponse }]);
+        // Update the content of the last message (the AI placeholder) in our local state
+        setMessages((prev) => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1].content = fullResponse;
+          return newMessages;
+        });
       }
 
       // 4. Save full assistant response
@@ -120,16 +133,24 @@ const AIChat = () => {
         content: fullResponse,
       });
 
+      // If we created a new conversation, navigate to its URL and update our ref.
+      if (isNewConversation) {
+        navigate(`/dashboard/ai-chat/${currentConversationId}`, { replace: true });
+        lastLoadedConversationId.current = currentConversationId;
+      }
+      
+      // Invalidate queries to keep sidebar and future loads fresh.
+      queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['messages', currentConversationId] });
+
     } catch (err: any) {
       const errorMessage = err.message || "An unknown error occurred.";
       setError(errorMessage);
       toast({ title: "Error", description: errorMessage, variant: "destructive" });
+      // On error, remove the user message and AI placeholder from local state
+      setMessages(prev => prev.slice(0, -2));
     } finally {
-      // Clear transient state and refetch persisted messages to sync the UI
-      setTransientMessages([]);
       setIsPending(false);
-      queryClient.invalidateQueries({ queryKey: ['messages', currentConversationId] });
-      queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] });
     }
   };
 
@@ -140,10 +161,10 @@ const AIChat = () => {
         behavior: 'smooth',
       });
     }
-  }, [displayedMessages]);
+  }, [messages]);
 
   const renderChatContent = () => {
-    if (isLoadingMessages) {
+    if (isLoadingMessages && !lastLoadedConversationId.current) {
       return (
         <div className="flex-1 flex justify-center items-center">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -151,7 +172,7 @@ const AIChat = () => {
       );
     }
 
-    if (displayedMessages.length === 0 && !isPending) {
+    if (messages.length === 0 && !isPending) {
       return (
         <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
           <img src={logo} alt="BlueWarriors Logo" className="w-24 h-24 mb-4" />
@@ -166,7 +187,7 @@ const AIChat = () => {
     return (
       <ScrollArea className="flex-1 p-6" ref={scrollAreaRef}>
         <div className="space-y-6">
-          {displayedMessages.map((message, index) => (
+          {messages.map((message, index) => (
             <div key={index} className={`flex items-start gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}>
               {message.role === 'assistant' && (
                 <Avatar className="h-8 w-8">
@@ -187,6 +208,17 @@ const AIChat = () => {
               )}
             </div>
           ))}
+          {isPending && messages[messages.length - 1]?.content === '' && (
+             <div className="flex items-start gap-4">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={logo} alt="AI Avatar" />
+                <AvatarFallback><Sparkles /></AvatarFallback>
+              </Avatar>
+              <div className="max-w-md p-3 rounded-lg bg-secondary flex items-center">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            </div>
+          )}
         </div>
       </ScrollArea>
     );
