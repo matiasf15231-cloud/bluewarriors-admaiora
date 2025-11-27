@@ -2,17 +2,10 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink, Target } from 'lucide-react';
+import { Camera, Video, Play, Users, Bot, Trophy, ExternalLink, Target, Loader2 } from 'lucide-react';
 import GalleryModal from '@/components/GalleryModal';
-
-// Import user-provided images
-import image1 from '@/assets/IMG_0538.png';
-import image2 from '@/assets/IMG_0539.png';
-
-// Import user-provided videos
-import video1 from '@/assets/1000030711.mp4';
-import video2 from '@/assets/1000030710.mp4';
-import video3 from '@/assets/1000030709.mp4';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface MediaItem {
   src: string;
@@ -27,43 +20,24 @@ const GallerySection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   
-  const mediaItems: MediaItem[] = [
-    {
-      src: image1,
-      title: 'Mesa',
-      description: '',
-      category: 'mesa',
-      type: 'photo',
-    },
-    {
-      src: image2,
-      title: 'Mesa',
-      description: '',
-      category: 'mesa',
-      type: 'photo',
-    },
-    {
-      src: video1,
-      title: 'Sesiones con Profesionales',
-      description: '',
-      category: 'profesionales',
-      type: 'video',
-    },
-    {
-      src: video2,
-      title: 'Sesiones con Profesionales',
-      description: '',
-      category: 'profesionales',
-      type: 'video',
-    },
-    {
-      src: video3,
-      title: 'Sesiones con Profesionales',
-      description: '',
-      category: 'profesionales',
-      type: 'video',
-    },
-  ];
+  const { data: mediaItems = [], isLoading } = useQuery<MediaItem[]>({
+    queryKey: ['gallery_media_public'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('gallery_media')
+        .select('public_url, title, description, category, type')
+        .order('created_at', { ascending: false });
+      if (error) throw new Error(error.message);
+      // Map Supabase data to MediaItem structure
+      return data.map(item => ({
+        src: item.public_url,
+        title: item.title,
+        description: item.description || '',
+        category: item.category,
+        type: item.type as 'photo' | 'video',
+      }));
+    }
+  });
   
   const categories = [{
     id: 'all',
@@ -98,7 +72,8 @@ const GallerySection = () => {
   const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab || (activeTab === 'videos' && item.type === 'video'));
 
   const handleImageClick = (index: number) => {
-    setSelectedImageIndex(index);
+    const originalIndex = mediaItems.findIndex(item => item.src === filteredItems[index].src);
+    setSelectedImageIndex(originalIndex);
     setIsModalOpen(true);
   };
 
@@ -146,7 +121,9 @@ const GallerySection = () => {
 
         {/* Área de Contenido */}
         <div className="min-h-[400px] flex items-center justify-center">
-          {filteredItems.length === 0 ? (
+          {isLoading ? (
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          ) : filteredItems.length === 0 ? (
             <div className="text-center">
               <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-muted/20 flex items-center justify-center">
                 <Camera className="h-12 w-12 text-muted-foreground" />
@@ -155,32 +132,31 @@ const GallerySection = () => {
                 Contenido Próximamente
               </h3>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Estamos preparando contenido increíble para esta sección. ¡Vuelve pronto para ver nuestras últimas actualizaciones!
+                No hay contenido para esta categoría todavía. ¡Vuelve pronto!
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredItems.map((item, index) => {
-                const itemIndexInFilteredList = filteredItems.findIndex(fi => fi.src === item.src);
                 return (
                   <Card 
-                    key={index} 
+                    key={item.src} 
                     className="group overflow-hidden hover:shadow-blue-glow transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer animate-fade-in"
                     style={{ 
                       animationDelay: `${index * 150}ms`,
                       animationFillMode: 'both'
                     }}
-                    onClick={() => handleImageClick(itemIndexInFilteredList)}
+                    onClick={() => handleImageClick(index)}
                   >
                     <CardContent className="p-0">
                       <div className="aspect-video relative overflow-hidden">
-                        <img 
-                          src={item.type === 'photo' ? item.src : ''} // Placeholder for video thumbnail if needed
-                          alt={item.title} 
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          style={{ display: item.type === 'photo' ? 'block' : 'none' }}
-                        />
-                        {item.type === 'video' && (
+                        {item.type === 'photo' ? (
+                          <img 
+                            src={item.src}
+                            alt={item.title} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                        ) : (
                           <video
                             src={item.src}
                             muted
@@ -216,7 +192,7 @@ const GallerySection = () => {
       <GalleryModal 
         isOpen={isModalOpen} 
         onClose={handleCloseModal} 
-        media={filteredItems} 
+        media={mediaItems} 
         startIndex={selectedImageIndex}
       />
     </section>

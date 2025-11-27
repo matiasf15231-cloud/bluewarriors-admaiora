@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import React, { useState, createContext, useContext } from "react";
-import { Menu, X, Home, FileText, LogOut, User, Undo2, Sparkles } from "lucide-react";
+import { Menu, X, Home, FileText, LogOut, User, Undo2, Sparkles, Camera } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -183,7 +183,7 @@ export const SidebarLink = ({
 
 export const SidebarContent = () => {
     const { open } = useSidebar();
-    const { user } = useAuth();
+    const { user, profile } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -210,6 +210,14 @@ export const SidebarContent = () => {
         },
     ];
 
+    const adminLinks: Link[] = [
+        {
+            label: "Gestionar Galería",
+            href: "/dashboard/gallery-management",
+            icon: <Camera className="h-5 w-5" />,
+        },
+    ];
+
     const returnLink: Link = {
         label: "Volver al Inicio",
         href: "/",
@@ -233,6 +241,18 @@ export const SidebarContent = () => {
                     {mainLinks.map((link, idx) => (
                         <SidebarLink key={idx} link={link} />
                     ))}
+                    {profile?.role === 'admin' && (
+                        <>
+                            <div className="px-3 pt-4 pb-2">
+                                <span className={cn("text-xs font-semibold text-muted-foreground uppercase tracking-wider", !open && "hidden")}>
+                                    Admin
+                                </span>
+                            </div>
+                            {adminLinks.map((link, idx) => (
+                                <SidebarLink key={idx} link={link} />
+                            ))}
+                        </>
+                    )}
                 </div>
             </div>
 

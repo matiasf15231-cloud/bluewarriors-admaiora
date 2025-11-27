@@ -16,6 +16,8 @@ import Documents from "./pages/dashboard/Documents";
 import DocumentEditor from "./pages/dashboard/DocumentEditor";
 import AIChat from "./pages/dashboard/AIChat";
 import AIChatLayout from "./components/AIChatLayout";
+import AdminRoute from "./components/AdminRoute";
+import GalleryManagement from "./pages/dashboard/GalleryManagement";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +46,14 @@ const App = () => (
               >
                 <Route index element={<DashboardHome />} />
                 <Route path="documents" element={<Documents />} />
+                <Route 
+                  path="gallery-management" 
+                  element={
+                    <AdminRoute>
+                      <GalleryManagement />
+                    </AdminRoute>
+                  } 
+                />
               </Route>
 
               {/* AI Chat routes with dedicated layout */}
