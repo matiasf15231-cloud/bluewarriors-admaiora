@@ -1,15 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, User, Sparkles, Loader2 } from 'lucide-react';
+import { User, Sparkles, Loader2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import logo from '@/assets/bluewarriors-logo.png';
+import { AIInputWithSearch } from '@/components/AIInputWithSearch';
+import { useToast } from '@/hooks/use-toast';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -19,8 +19,8 @@ interface Message {
 const AIChat = () => {
   const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   const { mutate: sendMessage, isPending, error } = useMutation({
     mutationFn: async (prompt: string) => {
@@ -36,13 +36,24 @@ const AIChat = () => {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-    const userMessage: Message = { role: 'user', content: input };
+  const handleSendMessage = (prompt: string, withSearch: boolean) => {
+    if (!prompt.trim()) return;
+    if (withSearch) {
+      toast({
+        title: "Búsqueda web no implementada",
+        description: "La función de búsqueda web se añadirá pronto.",
+      });
+    }
+    const userMessage: Message = { role: 'user', content: prompt };
     setMessages((prev) => [...prev, userMessage]);
-    sendMessage(input);
-    setInput('');
+    sendMessage(prompt);
+  };
+
+  const handleFileSelect = (file: File) => {
+    toast({
+      title: "Subida de archivos no implementada",
+      description: `La subida del archivo "${file.name}" no está soportada todavía.`,
+    });
   };
 
   useEffect(() => {
@@ -98,25 +109,19 @@ const AIChat = () => {
               )}
             </div>
           </ScrollArea>
-          <div className="p-4 border-t">
+          <div className="border-t">
             {error && (
-              <Alert variant="destructive" className="mb-4">
+              <Alert variant="destructive" className="m-4">
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>{error.message}</AlertDescription>
               </Alert>
             )}
-            <form onSubmit={handleSubmit} className="flex items-center gap-4">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Escribe tu mensaje aquí..."
-                className="flex-1"
-                disabled={isPending}
-              />
-              <Button type="submit" disabled={isPending || !input.trim()}>
-                {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              </Button>
-            </form>
+            <AIInputWithSearch
+              onSubmit={handleSendMessage}
+              onFileSelect={handleFileSelect}
+              placeholder="Habla con el asistente de IA..."
+              disabled={isPending}
+            />
           </div>
         </CardContent>
       </Card>
