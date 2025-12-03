@@ -8,8 +8,8 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff } from "lucide-react";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Navigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,7 +42,7 @@ const signInSchema = z.object({
 });
 
 const Login = () => {
-  const [isSignUp, setIsSignUp] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
   const { session, loading } = useAuth();
@@ -81,6 +81,7 @@ const Login = () => {
       toast({ title: "Error al registrarse", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "¡Éxito!", description: "Por favor, revisa tu correo para verificar tu cuenta." });
+      setIsSignUp(false);
     }
   }
 
@@ -115,6 +116,8 @@ const Login = () => {
     return <Navigate to={from} replace />;
   }
 
+  const isSubmitting = signInForm.formState.isSubmitting || signUpForm.formState.isSubmitting;
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-section p-4">
       <div className="w-full max-w-md">
@@ -138,14 +141,14 @@ const Login = () => {
                     <FormField control={signUpForm.control} name="firstName" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Nombre</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
+                        <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={signUpForm.control} name="lastName" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Apellido</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
+                        <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
@@ -153,7 +156,7 @@ const Login = () => {
                   <FormField control={signUpForm.control} name="email" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Correo electrónico</FormLabel>
-                      <FormControl><Input type="email" {...field} /></FormControl>
+                      <FormControl><Input type="email" {...field} disabled={isSubmitting} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -162,7 +165,7 @@ const Login = () => {
                       <FormLabel>Contraseña</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Input type={showPassword ? "text" : "password"} className="pr-10" {...field} />
+                          <Input type={showPassword ? "text" : "password"} className="pr-10" {...field} disabled={isSubmitting} />
                           <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-full px-3 text-muted-foreground hover:bg-transparent" onClick={() => setShowPassword(!showPassword)}>
                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                           </Button>
@@ -171,8 +174,9 @@ const Login = () => {
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <Button type="submit" className="w-full" disabled={signUpForm.formState.isSubmitting}>
-                    {signUpForm.formState.isSubmitting ? "Creando cuenta..." : "Crear cuenta gratis"}
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    {signUpForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Crear cuenta gratis
                   </Button>
                 </form>
               </Form>
@@ -182,7 +186,7 @@ const Login = () => {
                   <FormField control={signInForm.control} name="email" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Correo electrónico</FormLabel>
-                      <FormControl><Input type="email" {...field} /></FormControl>
+                      <FormControl><Input type="email" {...field} disabled={isSubmitting} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -191,7 +195,7 @@ const Login = () => {
                       <FormLabel>Contraseña</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Input type={showPassword ? "text" : "password"} className="pr-10" {...field} />
+                          <Input type={showPassword ? "text" : "password"} className="pr-10" {...field} disabled={isSubmitting} />
                           <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-full px-3 text-muted-foreground hover:bg-transparent" onClick={() => setShowPassword(!showPassword)}>
                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                           </Button>
@@ -200,8 +204,9 @@ const Login = () => {
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <Button type="submit" className="w-full" disabled={signInForm.formState.isSubmitting}>
-                    {signInForm.formState.isSubmitting ? "Iniciando sesión..." : "Iniciar Sesión"}
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    {signInForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Iniciar Sesión
                   </Button>
                 </form>
               </Form>
@@ -212,7 +217,7 @@ const Login = () => {
                 <span className="bg-card px-2 text-muted-foreground">O continuar con</span>
               </div>
             </div>
-            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn}>
+            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isSubmitting}>
               <img src={googleLogo} alt="Google" className="mr-2 h-4 w-4" />
               Google
             </Button>
@@ -220,7 +225,7 @@ const Login = () => {
           <CardFooter className="flex justify-center border-t !py-4">
             <p className="text-center text-sm text-muted-foreground">
               {isSignUp ? "¿Ya tienes una cuenta? " : "¿No tienes una cuenta? "}
-              <button onClick={() => { setIsSignUp(!isSignUp); signInForm.reset(); signUpForm.reset(); }} className="font-semibold text-primary hover:underline">
+              <button onClick={() => { setIsSignUp(!isSignUp); signInForm.reset(); signUpForm.reset(); }} className="font-semibold text-primary hover:underline" disabled={isSubmitting}>
                 {isSignUp ? "Inicia sesión" : "Regístrate"}
               </button>
             </p>
