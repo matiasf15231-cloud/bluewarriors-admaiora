@@ -6,18 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import { AuthProvider } from "./contexts/AuthContext";
-import Login from "./pages/Login";
-import ProtectedRoute from "./components/ProtectedRoute";
 import HomeLayout from "./components/HomeLayout";
-import DashboardLayout from "./components/DashboardLayout";
-import DashboardHome from "./pages/dashboard/Index";
-import Documents from "./pages/dashboard/Documents";
-import DocumentEditor from "./pages/dashboard/DocumentEditor";
-import AIChat from "./pages/dashboard/AIChat";
-import AIChatLayout from "./components/AIChatLayout";
-import AdminRoute from "./components/AdminRoute";
-import GalleryManagement from "./pages/dashboard/GalleryManagement";
 
 const queryClient = new QueryClient();
 
@@ -28,61 +17,12 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <AuthProvider>
-            <Routes>
-              <Route element={<HomeLayout />}>
-                <Route path="/" element={<Index />} />
-              </Route>
-              <Route path="/login" element={<Login />} />
-              
-              {/* Dashboard routes with standard sidebar */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<DashboardHome />} />
-                <Route path="documents" element={<Documents />} />
-                <Route 
-                  path="gallery-management" 
-                  element={
-                    <AdminRoute>
-                      <GalleryManagement />
-                    </AdminRoute>
-                  } 
-                />
-              </Route>
-
-              {/* AI Chat routes with dedicated layout */}
-              <Route
-                path="/dashboard/ai-chat"
-                element={
-                  <ProtectedRoute>
-                    <AIChatLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<AIChat />} />
-                <Route path=":conversationId" element={<AIChat />} />
-              </Route>
-
-              {/* Document editor route (full-screen) */}
-              <Route
-                path="/dashboard/documents/:id"
-                element={
-                  <ProtectedRoute>
-                    <DocumentEditor />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthProvider>
+          <Routes>
+            <Route element={<HomeLayout />}>
+              <Route path="/" element={<Index />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>

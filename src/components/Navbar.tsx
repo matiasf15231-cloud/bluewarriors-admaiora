@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Trophy, Users, Bot, Medal, Camera, LogIn, LayoutDashboard, LogOut } from 'lucide-react';
+import { Menu, X, Trophy, Users, Bot, Medal, Camera } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '@/assets/bluewarriors-logo.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { session } = useAuth();
   const navigate = useNavigate();
 
   const navItems = [
@@ -38,11 +35,6 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/');
-  };
-
   return (
     <nav className="fixed top-4 left-4 right-4 z-50 bg-background/95 backdrop-blur-sm border border-border shadow-card rounded-2xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -68,28 +60,6 @@ const Navbar = () => {
                 </button>
               ))}
             </div>
-            {session ? (
-              <div className="flex items-center space-x-2">
-                <Button asChild size="sm" className="hover:scale-105 transition-all duration-300">
-                  <Link to="/dashboard">
-                    <LayoutDashboard className="h-4 w-4 mr-2" />
-                    Panel
-                  </Link>
-                </Button>
-                <Button onClick={handleLogout} variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 hover:text-destructive hover:scale-105 transition-all duration-300">
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Button asChild size="sm" className="hover:scale-105 transition-all duration-300">
-                  <Link to="/login">
-                    <LogIn className="h-4 w-4 mr-2" />
-                    Iniciar Sesión
-                  </Link>
-                </Button>
-              </div>
-            )}
             <ThemeToggle />
           </div>
 
@@ -126,30 +96,6 @@ const Navbar = () => {
                 </button>
               );
             })}
-            <div className="border-t border-border my-2"></div>
-            {session ? (
-              <div className="space-y-1">
-                <Button asChild className="w-full justify-start">
-                  <Link to="/dashboard">
-                    <LayoutDashboard className="h-5 w-5 mr-3" />
-                    Panel
-                  </Link>
-                </Button>
-                <Button onClick={handleLogout} variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10">
-                  <LogOut className="h-5 w-5 mr-3" />
-                  Cerrar Sesión
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-1">
-                <Button asChild className="w-full">
-                  <Link to="/login">
-                    <LogIn className="h-5 w-5 mr-3" />
-                    Iniciar Sesión
-                  </Link>
-                </Button>
-              </div>
-            )}
           </div>
         </div>
       )}
