@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Camera, Video, Play, Users, Bot, Trophy, ExternalLink, Target, Loader2 } from 'lucide-react';
+import { Camera, Video, Play, Users, Bot, Trophy, Zap, ExternalLink, Target } from 'lucide-react';
 import GalleryModal from '@/components/GalleryModal';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+
+// Import user-provided images
+import image1 from '@/assets/IMG_0538.png';
+import image2 from '@/assets/IMG_0539.png';
 
 interface MediaItem {
   src: string;
@@ -20,24 +22,22 @@ const GallerySection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   
-  const { data: mediaItems = [], isLoading } = useQuery<MediaItem[]>({
-    queryKey: ['gallery_media_public'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('gallery_media')
-        .select('public_url, title, description, category, type')
-        .order('created_at', { ascending: false });
-      if (error) throw new Error(error.message);
-      // Map Supabase data to MediaItem structure
-      return data.map(item => ({
-        src: item.public_url,
-        title: item.title,
-        description: item.description || '',
-        category: item.category,
-        type: item.type as 'photo' | 'video',
-      }));
-    }
-  });
+  const mediaItems: MediaItem[] = [
+    {
+      src: image1,
+      title: 'Preparando la Misión',
+      description: 'Ajustando el robot para una de las misiones en la mesa de FLL.',
+      category: 'mesa',
+      type: 'photo',
+    },
+    {
+      src: image2,
+      title: 'Robot en la Mesa',
+      description: 'Vista del robot y la mesa de competencia durante una sesión de práctica.',
+      category: 'mesa',
+      type: 'photo',
+    },
+  ];
   
   const categories = [{
     id: 'all',
@@ -69,11 +69,10 @@ const GallerySection = () => {
     icon: Video
   }];
   
-  const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab || (activeTab === 'videos' && item.type === 'video'));
+  const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab);
 
   const handleImageClick = (index: number) => {
-    const originalIndex = mediaItems.findIndex(item => item.src === filteredItems[index].src);
-    setSelectedImageIndex(originalIndex);
+    setSelectedImageIndex(index);
     setIsModalOpen(true);
   };
 
@@ -121,9 +120,7 @@ const GallerySection = () => {
 
         {/* Área de Contenido */}
         <div className="min-h-[400px] flex items-center justify-center">
-          {isLoading ? (
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          ) : filteredItems.length === 0 ? (
+          {filteredItems.length === 0 ? (
             <div className="text-center">
               <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-muted/20 flex items-center justify-center">
                 <Camera className="h-12 w-12 text-muted-foreground" />
@@ -132,7 +129,7 @@ const GallerySection = () => {
                 Contenido Próximamente
               </h3>
               <p className="text-muted-foreground max-w-md mx-auto">
-                No hay contenido para esta categoría todavía. ¡Vuelve pronto!
+                Estamos preparando contenido increíble para esta sección. ¡Vuelve pronto para ver nuestras últimas actualizaciones!
               </p>
             </div>
           ) : (
@@ -140,7 +137,7 @@ const GallerySection = () => {
               {filteredItems.map((item, index) => {
                 return (
                   <Card 
-                    key={item.src} 
+                    key={index} 
                     className="group overflow-hidden hover:shadow-blue-glow transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer animate-fade-in"
                     style={{ 
                       animationDelay: `${index * 150}ms`,
@@ -150,13 +147,13 @@ const GallerySection = () => {
                   >
                     <CardContent className="p-0">
                       <div className="aspect-video relative overflow-hidden">
-                        {item.type === 'photo' ? (
-                          <img 
-                            src={item.src}
-                            alt={item.title} 
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                        ) : (
+                        <img 
+                          src={item.type === 'photo' ? item.src : ''} // Placeholder for video thumbnail if needed
+                          alt={item.title} 
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          style={{ display: item.type === 'photo' ? 'block' : 'none' }}
+                        />
+                        {item.type === 'video' && (
                           <video
                             src={item.src}
                             muted
@@ -192,7 +189,7 @@ const GallerySection = () => {
       <GalleryModal 
         isOpen={isModalOpen} 
         onClose={handleCloseModal} 
-        media={mediaItems} 
+        media={filteredItems} 
         startIndex={selectedImageIndex}
       />
     </section>

@@ -2,12 +2,9 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, Trophy, Users, Bot, Medal, Camera } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { Link, useNavigate } from 'react-router-dom';
-import logo from '@/assets/bluewarriors-logo.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
 
   const navItems = [
     { name: 'Inicio', href: '#inicio', icon: Trophy },
@@ -18,19 +15,9 @@ const Navbar = () => {
   ];
 
   const scrollToSection = (href: string) => {
-    if (window.location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => {
-        const element = document.querySelector(href);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
     setIsOpen(false);
   };
@@ -38,12 +25,12 @@ const Navbar = () => {
   return (
     <nav className="fixed top-4 left-4 right-4 z-50 bg-background/95 backdrop-blur-sm border border-border shadow-card rounded-2xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/">
-              <img src={logo} alt="BlueWarriors Logo" className="h-16" />
-            </Link>
+            <h1 className="text-2xl font-bold bg-gradient-hero bg-clip-text text-transparent">
+              BlueWarriors
+            </h1>
           </div>
 
           {/* Desktop Navigation */}
