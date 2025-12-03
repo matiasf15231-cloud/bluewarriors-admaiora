@@ -27,44 +27,6 @@ const GallerySection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   
-  const mediaItems: MediaItem[] = [
-    {
-      src: image1,
-      title: 'Preparando la Misión',
-      description: 'Ajustando el robot para una de las misiones en la mesa de FLL.',
-      category: 'mesa',
-      type: 'photo',
-    },
-    {
-      src: image2,
-      title: 'Robot en la Mesa',
-      description: 'Vista del robot y la mesa de competencia durante una sesión de práctica.',
-      category: 'mesa',
-      type: 'photo',
-    },
-    {
-      src: video1,
-      title: 'Sesión con Profesional #1',
-      description: 'Compartiendo conocimientos y experiencias con expertos de la industria.',
-      category: 'profesionales',
-      type: 'video',
-    },
-    {
-      src: video2,
-      title: 'Sesión con Profesional #2',
-      description: 'Aprendiendo de los mejores para inspirar nuestras próximas innovaciones.',
-      category: 'profesionales',
-      type: 'video',
-    },
-    {
-      src: video3,
-      title: 'Sesión con Profesional #3',
-      description: 'Una charla inspiradora sobre el futuro de la robótica y la tecnología.',
-      category: 'profesionales',
-      type: 'video',
-    },
-  ];
-  
   const categories = [{
     id: 'all',
     name: 'Todo',
@@ -94,6 +56,49 @@ const GallerySection = () => {
     name: 'Videos',
     icon: Video
   }];
+
+  const categoryMap = categories.reduce((acc, category) => {
+    acc[category.id] = category.name;
+    return acc;
+  }, {} as Record<string, string>);
+
+  const mediaItems: MediaItem[] = [
+    {
+      src: image1,
+      title: categoryMap.mesa,
+      description: '',
+      category: 'mesa',
+      type: 'photo',
+    },
+    {
+      src: image2,
+      title: categoryMap.mesa,
+      description: '',
+      category: 'mesa',
+      type: 'photo',
+    },
+    {
+      src: video1,
+      title: categoryMap.profesionales,
+      description: '',
+      category: 'profesionales',
+      type: 'video',
+    },
+    {
+      src: video2,
+      title: categoryMap.profesionales,
+      description: '',
+      category: 'profesionales',
+      type: 'video',
+    },
+    {
+      src: video3,
+      title: categoryMap.profesionales,
+      description: '',
+      category: 'profesionales',
+      type: 'video',
+    },
+  ];
   
   const filteredItems = activeTab === 'all' ? mediaItems : mediaItems.filter(item => item.category === activeTab);
 
@@ -202,7 +207,9 @@ const GallerySection = () => {
                           </Badge>
                         </div>
                         <h3 className="font-semibold text-lg text-foreground mb-2 transition-colors duration-300 group-hover:text-primary">{item.title}</h3>
-                        <p className="text-muted-foreground text-sm transition-colors duration-300 group-hover:text-foreground">{item.description}</p>
+                        {item.description && (
+                          <p className="text-muted-foreground text-sm transition-colors duration-300 group-hover:text-foreground">{item.description}</p>
+                        )}
                       </div>
                     </CardContent>
                   </Card>

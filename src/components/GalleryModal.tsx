@@ -101,7 +101,9 @@ const GalleryModal = ({ isOpen, onClose, media, startIndex = 0 }: GalleryModalPr
         </div>
         <DialogHeader className="p-6 pt-4 bg-background rounded-b-lg">
           <DialogTitle className="text-2xl font-bold text-foreground">{currentMedia.title}</DialogTitle>
-          <DialogDescription className="text-muted-foreground">{currentMedia.description}</DialogDescription>
+          {currentMedia.description && (
+            <DialogDescription className="text-muted-foreground">{currentMedia.description}</DialogDescription>
+          )}
         </DialogHeader>
       </DialogContent>
     </Dialog>
